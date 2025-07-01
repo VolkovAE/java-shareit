@@ -24,14 +24,17 @@ import java.util.List;
 public class ItemServiceImpl implements ItemService {
     private final ItemStorage itemStorage;
     private final UserStorage userStorage;
+    private final ItemMapper itemMapper;
 
     private static final Logger log = LoggerFactory.getLogger(ItemServiceImpl.class);
 
     @Autowired
     public ItemServiceImpl(@Qualifier("InMemoryItemStorageImpl") ItemStorage itemStorage,
-                           @Qualifier("InMemoryUserStorageImpl") UserStorage userStorage) {
+                           @Qualifier("InMemoryUserStorageImpl") UserStorage userStorage,
+                           ItemMapper itemMapper) {
         this.itemStorage = itemStorage;
         this.userStorage = userStorage;
+        this.itemMapper = itemMapper;
     }
 
     @Override
@@ -39,11 +42,11 @@ public class ItemServiceImpl implements ItemService {
         User user = userStorage.getById(userId).orElseThrow(
                 () -> new NotFoundException("Пользователь с id = " + userId + " не найден.", log));
 
-        Item item = ItemMapper.mapToItem(itemRequest, user);
+        Item item = itemMapper.toItem(itemRequest, user);
 
         item = itemStorage.add(item);
 
-        return ItemMapper.mapToItemDto(item);
+        return itemMapper.toItemDto(item);
     }
 
     @Override
@@ -51,21 +54,21 @@ public class ItemServiceImpl implements ItemService {
         Item item = itemStorage.getById(itemId).orElseThrow(
                 () -> new NotFoundException("Вещь с id = " + itemId + " не найдена.", log));
 
-        return ItemMapper.mapToItemDto(item);
+        return itemMapper.toItemDto(item);
     }
 
     @Override
     public Collection<ItemDto> findAll(Long userId) {
         if (userId == 0) {
             return itemStorage.findAll().stream()
-                    .map(ItemMapper::mapToItemDto)
+                    .map(itemMapper::toItemDto)
                     .toList();
         } else {
             User owner = userStorage.getById(userId).orElseThrow(
                     () -> new NotFoundException("Пользователь с id = " + userId + " не найден.", log));
 
             return itemStorage.findAll(owner).stream()
-                    .map(ItemMapper::mapToItemDto)
+                    .map(itemMapper::toItemDto)
                     .toList();
         }
     }
@@ -75,7 +78,7 @@ public class ItemServiceImpl implements ItemService {
         if (textSearch.isBlank()) return List.of();
 
         return itemStorage.findAllByText(textSearch).stream()
-                .map(ItemMapper::mapToItemDto)
+                .map(itemMapper::toItemDto)
                 .toList();
     }
 
@@ -96,11 +99,11 @@ public class ItemServiceImpl implements ItemService {
                     "не является владельцем вещи " + item + "." +
                     "Редактирование данных по вещи запрещено.");
 
-        Item newItem = ItemMapper.mapToItem(itemId, itemRequest, user);
+        Item newItem = itemMapper.toItem(itemId, itemRequest, user);
 
         item = itemStorage.update(newItem);
 
-        return ItemMapper.mapToItemDto(item);
+        return itemMapper.toItemDto(item);
     }
 
     @Override
@@ -122,6 +125,6 @@ public class ItemServiceImpl implements ItemService {
 
         removeItem = itemStorage.delete(removeItem);
 
-        return ItemMapper.mapToItemDto(removeItem);
+        return itemMapper.toItemDto(removeItem);
     }
 }

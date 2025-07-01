@@ -1,37 +1,24 @@
 package ru.practicum.shareit.user.mapper;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingConstants;
+import org.springframework.stereotype.Component;
+import ru.practicum.shareit.mapper.IgnoreUnmappedMapperConfig;
 import ru.practicum.shareit.user.dto.NewUserRequest;
 import ru.practicum.shareit.user.dto.UpdateUserRequest;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class UserMapper {
-    public static User mapToUser(NewUserRequest request) {
-        User user = new User();
-        user.setEmail(request.getEmail());
-        user.setName(request.getName());
+@Mapper(componentModel = MappingConstants.ComponentModel.SPRING, config = IgnoreUnmappedMapperConfig.class)
+@Component
+public interface UserMapper {
+    User toUser(NewUserRequest request);
 
-        return user;
-    }
+    @Mapping(source = "id", target = "id")
+    @Mapping(source = "request.email", target = "email")
+    @Mapping(source = "request.name", target = "name")
+    User toUser(Long id, UpdateUserRequest request);
 
-    public static User mapToUser(Long id, UpdateUserRequest request) {
-        User user = new User();
-        user.setId(id);
-        user.setEmail(request.getEmail());
-        user.setName(request.getName());
-
-        return user;
-    }
-
-    public static UserDto mapToUserDto(User user) {
-        UserDto dto = new UserDto();
-        dto.setId(user.getId());
-        dto.setEmail(user.getEmail());
-        dto.setName(user.getName());
-
-        return dto;
-    }
+    UserDto toUserDto(User user);
 }

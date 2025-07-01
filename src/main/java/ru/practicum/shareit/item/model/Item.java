@@ -7,7 +7,7 @@ import lombok.AccessLevel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.FieldDefaults;
-import ru.practicum.shareit.request.ItemRequest;
+import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.validation.FieldDescription;
 import ru.practicum.shareit.validation.Marker;
@@ -23,15 +23,15 @@ public class Item {
     @NotNull(message = "При обновлении данных о вещи должен быть указан её id.",
             groups = {Marker.OnUpdate.class, Marker.OnDelete.class})
     @FieldDescription(value = "Уникальный идентификатор вещи", changeByCopy = false)
-    Long id;    // уникальный идентификатор вещи
+    Long id;
 
     @NotBlank(message = "Название вещи не может быть пустым.", groups = Marker.OnCreate.class)
     @FieldDescription("Название")
-    String name;    // краткое название
+    String name;
 
     @NotBlank(message = "При создании вещи должна быть указано описание.", groups = Marker.OnCreate.class)
     @FieldDescription("Описание")
-    String description; // развёрнутое описание
+    String description;
 
     @NotNull(message = "При создании вещи должна быть указана доступность для аренды.",
             groups = Marker.OnCreate.class)

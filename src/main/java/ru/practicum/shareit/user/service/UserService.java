@@ -18,41 +18,44 @@ import java.util.Collection;
 @Service
 public class UserService {
     private final UserStorage userStorage;
+    private final UserMapper userMapper;
 
     private static final Logger log = LoggerFactory.getLogger(UserService.class);
 
     @Autowired
-    public UserService(@Qualifier("InMemoryUserStorageImpl") UserStorage userStorage) {
+    public UserService(@Qualifier("InMemoryUserStorageImpl") UserStorage userStorage,
+                       UserMapper userMapper) {
         this.userStorage = userStorage;
+        this.userMapper = userMapper;
     }
 
     public UserDto add(NewUserRequest userRequest) {
-        User user = UserMapper.mapToUser(userRequest);
+        User user = userMapper.toUser(userRequest);
 
         user = userStorage.add(user);
 
-        return UserMapper.mapToUserDto(user);
+        return userMapper.toUserDto(user);
     }
 
     public UserDto getById(Long userId) {
         User user = userStorage.getById(userId).orElseThrow(
                 () -> new NotFoundException("Пользователь с id = " + userId + " не найден.", log));
 
-        return UserMapper.mapToUserDto(user);
+        return userMapper.toUserDto(user);
     }
 
     public Collection<UserDto> findAll() {
         return userStorage.findAll().stream()
-                .map(UserMapper::mapToUserDto)
+                .map(userMapper::toUserDto)
                 .toList();
     }
 
     public UserDto update(Long userId, UpdateUserRequest userRequest) {
-        User user = UserMapper.mapToUser(userId, userRequest);
+        User user = userMapper.toUser(userId, userRequest);
 
         user = userStorage.update(user);
 
-        return UserMapper.mapToUserDto(user);
+        return userMapper.toUserDto(user);
     }
 
     public UserDto delete(final Long userId) {
@@ -61,6 +64,6 @@ public class UserService {
 
         removeUser = userStorage.delete(removeUser);
 
-        return UserMapper.mapToUserDto(removeUser);
+        return userMapper.toUserDto(removeUser);
     }
 }

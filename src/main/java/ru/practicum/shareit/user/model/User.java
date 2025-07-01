@@ -22,7 +22,7 @@ public class User {
     @NotNull(message = "При обновлении данных о пользователе должен быть указан его id.",
             groups = {Marker.OnUpdate.class, Marker.OnDelete.class})
     @FieldDescription(value = "Уникальный идентификатор пользователя", changeByCopy = false)
-    Long id;    // уникальный идентификатор пользователя
+    Long id;
 
     @Email(message = "Email is not valid")
     @NotBlank(message = "Электронная почта не может быть пустой.", groups = Marker.OnCreate.class)

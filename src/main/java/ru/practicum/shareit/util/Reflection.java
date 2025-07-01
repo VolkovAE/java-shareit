@@ -1,14 +1,13 @@
 package ru.practicum.shareit.util;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import lombok.experimental.UtilityClass;
 import ru.practicum.shareit.validation.FieldDescription;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@UtilityClass
 public final class Reflection {
     public static <T> String[] getIgnoreProperties(T obj) {
         List<String> listIgnoreProperties = new ArrayList<>();

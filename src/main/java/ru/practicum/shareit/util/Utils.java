@@ -1,11 +1,10 @@
 package ru.practicum.shareit.util;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import lombok.experimental.UtilityClass;
 
 import java.util.Map;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@UtilityClass
 public class Utils {
     public static <T> long getNextId(Map<Long, T> map) {
         long currentMaxId = map.keySet().stream() // открыл поток Stream<Long>

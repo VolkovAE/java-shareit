@@ -1,43 +1,34 @@
 package ru.practicum.shareit.item.mapper;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingConstants;
+import org.mapstruct.factory.Mappers;
+import org.springframework.stereotype.Component;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.NewItemRequest;
 import ru.practicum.shareit.item.dto.UpdateItemRequest;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.mapper.IgnoreUnmappedMapperConfig;
 import ru.practicum.shareit.user.model.User;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class ItemMapper {
-    public static Item mapToItem(NewItemRequest request, User owner) {
-        Item item = new Item();
-        item.setName(request.getName());
-        item.setDescription(request.getDescription());
-        item.setAvailable(request.getAvailable());
-        item.setOwner(owner);
+@Mapper(componentModel = MappingConstants.ComponentModel.SPRING, config = IgnoreUnmappedMapperConfig.class)
+@Component
+public interface ItemMapper {
+    ItemMapper INSTANCE = Mappers.getMapper(ItemMapper.class);
 
-        return item;
-    }
+    @Mapping(source = "request.name", target = "name")
+    @Mapping(source = "request.description", target = "description")
+    @Mapping(source = "request.available", target = "available")
+    @Mapping(source = "owner", target = "owner")
+    Item toItem(NewItemRequest request, User owner);
 
-    public static Item mapToItem(Long id, UpdateItemRequest request, User owner) {
-        Item item = new Item();
-        item.setId(id);
-        item.setName(request.getName());
-        item.setDescription(request.getDescription());
-        item.setAvailable(request.getAvailable());
-        item.setOwner(owner);
+    @Mapping(source = "id", target = "id")
+    @Mapping(source = "request.name", target = "name")
+    @Mapping(source = "request.description", target = "description")
+    @Mapping(source = "request.available", target = "available")
+    @Mapping(source = "owner", target = "owner")
+    Item toItem(Long id, UpdateItemRequest request, User owner);
 
-        return item;
-    }
-
-    public static ItemDto mapToItemDto(Item item) {
-        ItemDto dto = new ItemDto();
-        dto.setId(item.getId());
-        dto.setName(item.getName());
-        dto.setDescription(item.getDescription());
-        dto.setAvailable(item.getAvailable());
-
-        return dto;
-    }
+    ItemDto toItemDto(Item item);
 }
