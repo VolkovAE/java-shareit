@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+@Deprecated
 @Repository
 @Qualifier("InMemoryUserStorageImpl")
 public class InMemoryUserStorageImpl implements UserStorage {

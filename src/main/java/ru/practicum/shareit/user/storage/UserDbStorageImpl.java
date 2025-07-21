@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
+@Deprecated
 public class UserDbStorageImpl implements UserStorage {
     @Override
     public User add(User user) {
