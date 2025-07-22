@@ -11,7 +11,7 @@ public interface UserService {
 
     public UserDto getById(Long userId);
 
-    public Collection<UserDto> findAll();
+    public Collection<UserDto> findAll(int indexPage, int countItems);
 
     public UserDto update(Long userId, UpdateUserRequest userRequest);
 

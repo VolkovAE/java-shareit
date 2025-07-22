@@ -2,9 +2,11 @@ package ru.practicum.shareit.user;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.user.dto.NewUserRequest;
@@ -27,7 +29,7 @@ public class UserController {
     private static final Logger log = LoggerFactory.getLogger(UserController.class);
 
     @Autowired
-    public UserController(UserService userService) {
+    public UserController(@Qualifier("UserDBServiceImpl") UserService userService) {
         this.userService = userService;
     }
 
@@ -46,8 +48,9 @@ public class UserController {
     }
 
     @GetMapping
-    public Collection<UserDto> findAll() {
-        return userService.findAll();
+    public Collection<UserDto> findAll(@RequestParam(name = "page", defaultValue = "0") @PositiveOrZero int page,
+                                       @RequestParam(name = "count", defaultValue = "32") @Positive int count) {
+        return userService.findAll(page, count);
     }
 
     @PatchMapping("/{id}")

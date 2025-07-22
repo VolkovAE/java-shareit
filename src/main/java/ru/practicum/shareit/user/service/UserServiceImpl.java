@@ -11,26 +11,22 @@ import ru.practicum.shareit.user.dto.UpdateUserRequest;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.mapper.UserMapper;
 import ru.practicum.shareit.user.model.User;
-import ru.practicum.shareit.user.storage.UserRepository;
 import ru.practicum.shareit.user.storage.UserStorage;
 
 import java.util.Collection;
 
+@Deprecated
 @Service
 @Qualifier("UserServiceImpl")
-// todo сделать две реализации сервиса с памятью и БД и соответственно использовать интерфейс в контроллере
 public class UserServiceImpl implements UserService {
-    private final UserRepository userRepository;
     private final UserStorage userStorage;
     private final UserMapper userMapper;
 
     private static final Logger log = LoggerFactory.getLogger(UserService.class);
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository,
-                           @Qualifier("InMemoryUserStorageImpl") UserStorage userStorage,
+    public UserServiceImpl(@Qualifier("InMemoryUserStorageImpl") UserStorage userStorage,
                            UserMapper userMapper) {
-        this.userRepository = userRepository;
         this.userStorage = userStorage;
         this.userMapper = userMapper;
     }
@@ -44,13 +40,13 @@ public class UserServiceImpl implements UserService {
     }
 
     public UserDto getById(Long userId) {
-        User user = userRepository.findById(userId)
+        User user = userStorage.getById(userId)
                 .orElseThrow(() -> new NotFoundException("Пользователь с id = " + userId + " не найден.", log));
 
         return userMapper.toUserDto(user);
     }
 
-    public Collection<UserDto> findAll() {
+    public Collection<UserDto> findAll(int indexPage, int countItems) {
         return userStorage.findAll().stream()
                 .map(userMapper::toUserDto)
                 .toList();
