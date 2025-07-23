@@ -19,6 +19,7 @@ import ru.practicum.shareit.user.storage.UserRepository;
 import ru.practicum.shareit.util.Reflection;
 
 import java.util.Collection;
+import java.util.List;
 
 @Service
 @Qualifier("ItemDBServiceImpl")
@@ -64,31 +65,23 @@ public class ItemDBServiceImpl implements ItemService {
 
     @Override
     public Collection<ItemDto> findAll(Long userId) {
-//        if (userId == 0) {
-//            return itemStorage.findAll().stream()
-//                    .map(itemMapper::toItemDto)
-//                    .toList();
-//        } else {
-//            User owner = userStorage.getById(userId).orElseThrow(
-//                    () -> new NotFoundException("Пользователь с id = " + userId + " не найден.", log));
-//
-//            return itemStorage.findAll(owner).stream()
-//                    .map(itemMapper::toItemDto)
-//                    .toList();
-//        }
+        User owner = userRepository.findById(userId).orElseThrow(
+                () -> new NotFoundException("Пользователь с id = " + userId + " не найден.", log));
 
-        return null;
+        log.info("Получен список вещей пользователя {}.", owner);
+
+        return itemRepository.findByOwner(owner).stream()
+                .map(itemMapper::toItemDto)
+                .toList();
     }
 
     @Override
     public Collection<ItemDto> findAllByText(String textSearch) {
-//        if (textSearch.isBlank()) return List.of();
-//
-//        return itemStorage.findAllByText(textSearch).stream()
-//                .map(itemMapper::toItemDto)
-//                .toList();
+        if (textSearch.isBlank()) return List.of();
 
-        return null;
+        log.info("Получен список вещей доступных к аренде по строке поиска {}.", textSearch);
+
+        return itemRepository.findAllByText(textSearch);
     }
 
     @Override
