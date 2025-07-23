@@ -7,6 +7,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
+@Deprecated
 public class ItemDbStorageImpl implements ItemStorage {
     @Override
     public Item add(Item item) {

@@ -51,6 +51,8 @@ public class UserDBServiceImpl implements UserService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("Пользователь с id = " + userId + " не найден.", log));
 
+        log.info("Предоставлены данные по пользователю {}.", user);
+
         return userMapper.toUserDto(user);
     }
 

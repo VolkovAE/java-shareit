@@ -29,7 +29,7 @@ public class ItemController {
     private static final Logger log = LoggerFactory.getLogger(ItemController.class);
 
     @Autowired
-    public ItemController(@Qualifier("ItemServiceImpl") ItemService itemService) {
+    public ItemController(@Qualifier("ItemDBServiceImpl") ItemService itemService) {
         this.itemService = itemService;
     }
 
