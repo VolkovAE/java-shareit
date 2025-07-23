@@ -113,7 +113,6 @@ public class UserDBServiceImpl implements UserService {
     }
 
     private boolean isEmailFree(final String email) {
-        // todo реализовать свой запрос к БД
-        return true;//findAll().stream().noneMatch(curUser -> curUser.getEmail().equals(email));
+        return userRepository.findByEmailIgnoreCase(email).isEmpty();
     }
 }
