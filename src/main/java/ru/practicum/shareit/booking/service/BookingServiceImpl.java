@@ -20,6 +20,11 @@ import ru.practicum.shareit.item.storage.ItemRepository;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.storage.UserRepository;
 
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Objects;
+
 @Service
 @Qualifier("BookingServiceImpl")
 public class BookingServiceImpl implements BookingService {
@@ -110,5 +115,57 @@ public class BookingServiceImpl implements BookingService {
         log.info("Предоставлена информация по заявке на аренду {} .", booking);
 
         return bookingMapper.toBookingDto(booking);
+    }
+
+    @Override
+    public Collection<BookingDto> findByBooker(Long userId, String state) {
+        User user = userRepository.findById(userId).orElseThrow(
+                () -> new NotFoundException("Пользователь с id = " + userId + " не найден.", log));
+
+        // state:
+        //  ALL - все заявки: *
+        //  CURRENT - текущие заявки: (end >= now) and (now >= start)
+        //  PAST - завершенные заявки: now > end
+        //  FUTURE - будущие заявки: start > now
+        //  WAITING - ожидающие подтверждения заявки: status = WAITING
+        //  REJECTED - отклоненные заявки: status = REJECTED
+
+        Collection<Booking> bookingCollection = new ArrayList<>();
+
+        if (state.equalsIgnoreCase("ALL")) bookingCollection = getAllByBooker(user);
+        else if (state.equalsIgnoreCase("CURRENT")) bookingCollection = getCurrentByBooker(user);
+        else if (state.equalsIgnoreCase("PAST")) bookingCollection = getPastByBooker(user);
+        else if (state.equalsIgnoreCase("FUTURE")) bookingCollection = getFutureByBooker(user);
+        else if (state.equalsIgnoreCase("WAITING")) bookingCollection = getWaitingByBooker(user);
+        else if (state.equalsIgnoreCase("REJECTED")) bookingCollection = getRejectedByBooker(user);
+        else throw new NotFoundException("Значение параметра state е определено: " + state, log);
+
+        return Objects.requireNonNull(bookingCollection).stream()
+                .map(bookingMapper::toBookingDto)
+                .toList();
+    }
+
+    private Collection<Booking> getAllByBooker(User user) {
+        return bookingRepository.findByBookerOrderByIdDesc(user);
+    }
+
+    private Collection<Booking> getCurrentByBooker(User user) {
+        return null;    // todo
+    }
+
+    private Collection<Booking> getPastByBooker(User user) {
+        return bookingRepository.findByBookerAndEndLessThanOrderByIdDesc(user, Instant.now());
+    }
+
+    private Collection<Booking> getFutureByBooker(User user) {
+        return bookingRepository.findByBookerAndStartGreaterThanOrderByIdDesc(user, Instant.now());
+    }
+
+    private Collection<Booking> getWaitingByBooker(User user) {
+        return bookingRepository.findByBookerAndStatusOrderByIdDesc(user, StatusBooking.WAITING);
+    }
+
+    private Collection<Booking> getRejectedByBooker(User user) {
+        return bookingRepository.findByBookerAndStatusOrderByIdDesc(user, StatusBooking.REJECTED);
     }
 }

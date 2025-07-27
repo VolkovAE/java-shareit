@@ -13,6 +13,8 @@ import ru.practicum.shareit.booking.dto.NewBookingRequest;
 import ru.practicum.shareit.booking.service.BookingService;
 import ru.practicum.shareit.validation.Marker;
 
+import java.util.Collection;
+
 /**
  * add-bookings.
  */
@@ -47,5 +49,11 @@ public class BookingController {
     public BookingDto findById(@RequestHeader(name = "X-Sharer-User-Id", required = true) @Positive Long userId,
                                @PathVariable(name = "bookingId", required = true) @Positive Long bookingId) {
         return bookingService.findById(bookingId, userId);
+    }
+
+    @GetMapping
+    public Collection<BookingDto> findByBooker(@RequestHeader(name = "X-Sharer-User-Id", required = true) @Positive Long userId,
+                                               @RequestParam(name = "state", required = false, defaultValue = "ALL") String state) {
+        return bookingService.findByBooker(userId, state);
     }
 }
