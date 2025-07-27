@@ -42,4 +42,10 @@ public class BookingController {
                               @RequestParam(name = "approved", required = true) Boolean approval) {
         return bookingService.approve(bookingId, userId, approval);
     }
+
+    @GetMapping("/{bookingId}")
+    public BookingDto findById(@RequestHeader(name = "X-Sharer-User-Id", required = true) @Positive Long userId,
+                               @PathVariable(name = "bookingId", required = true) @Positive Long bookingId) {
+        return bookingService.findById(bookingId, userId);
+    }
 }

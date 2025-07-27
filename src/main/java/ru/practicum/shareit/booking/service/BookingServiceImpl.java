@@ -95,4 +95,20 @@ public class BookingServiceImpl implements BookingService {
     private void toNotApprove(Booking booking) {
         booking.setStatus(StatusBooking.REJECTED);
     }
+
+    @Override
+    public BookingDto findById(Long bookingId, Long userId) {
+        Booking booking = bookingRepository.findById(bookingId).orElseThrow(
+                () -> new NotFoundException("Заявка на аренду с id = " + bookingId + " не найдена.", log));
+
+        Item item = booking.getItem();
+
+        if ((!itemService.isOwner(item, userId)) && (!booking.getBooker().getId().equals(userId)))
+            throw new AccessForbidden("Пользователь с id = " + userId + " не является владельцем вещи с id = " +
+                    item.getId() + " или составителем заявки на бронирование с id = " + bookingId + ".", log);
+
+        log.info("Предоставлена информация по заявке на аренду {} .", booking);
+
+        return bookingMapper.toBookingDto(booking);
+    }
 }
