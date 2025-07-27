@@ -1,15 +1,19 @@
 package ru.practicum.shareit.booking.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Null;
 import lombok.Getter;
 import lombok.Setter;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
+import ru.practicum.shareit.validation.FieldDescription;
+import ru.practicum.shareit.validation.Marker;
 
 import java.time.Instant;
 
 /**
- * TODO Sprint add-bookings.
+ * add-bookings.
  */
 @Entity
 @Table(name = "Bookings")
@@ -18,7 +22,11 @@ import java.time.Instant;
 public class Booking {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;    // уникальный идентификатор бронирования;
+    @Null(message = "При создании запроса id формируется автоматически.", groups = Marker.OnCreate.class)
+    @NotNull(message = "При обновлении данных о запросе должен быть указан его id.",
+            groups = {Marker.OnUpdate.class, Marker.OnDelete.class})
+    @FieldDescription(value = "Уникальный идентификатор бронирования", changeByCopy = false)
+    Long id;
 
     @Column(name = "start_date")
     Instant start;  // дата и время начала бронирования;

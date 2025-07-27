@@ -7,6 +7,7 @@ import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
 
 import java.util.Collection;
+import java.util.Optional;
 
 public interface ItemRepository extends JpaRepository<Item, Long> {
     @Query("select new ru.practicum.shareit.item.dto.ItemDto(i.id, i.name, i.description, i.available) " +
@@ -17,4 +18,6 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
     Collection<ItemDto> findAllByText(String textSearch);
 
     Collection<Item> findByOwner(User user);
+
+    Optional<Item> findByIdAndAvailableTrue(Long id);
 }
