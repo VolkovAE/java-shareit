@@ -8,10 +8,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import ru.practicum.shareit.exception.DuplicatedDataException;
-import ru.practicum.shareit.exception.ItemNotAvailable;
-import ru.practicum.shareit.exception.NotFoundException;
-import ru.practicum.shareit.exception.ValidationException;
+import ru.practicum.shareit.exception.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -100,6 +97,15 @@ public class ErrorHandlingControllerAdvice {
     @ExceptionHandler(ItemNotAvailable.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ValidationErrorResponse onItemNotAvailable(ItemNotAvailable e) {
+        Violation violation = new Violation("-", e.getMessage());
+        List<Violation> violationList = List.of(violation);
+
+        return new ValidationErrorResponse(violationList);
+    }
+
+    @ExceptionHandler(AccessForbidden.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ValidationErrorResponse onAccessForbidden(AccessForbidden e) {
         Violation violation = new Violation("-", e.getMessage());
         List<Violation> violationList = List.of(violation);
 

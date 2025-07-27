@@ -9,10 +9,13 @@ import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.NewBookingRequest;
 import ru.practicum.shareit.booking.mapper.BookingMapper;
 import ru.practicum.shareit.booking.model.Booking;
+import ru.practicum.shareit.booking.model.StatusBooking;
 import ru.practicum.shareit.booking.storage.BookingRepository;
+import ru.practicum.shareit.exception.AccessForbidden;
 import ru.practicum.shareit.exception.ItemNotAvailable;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.item.storage.ItemRepository;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.storage.UserRepository;
@@ -21,6 +24,7 @@ import ru.practicum.shareit.user.storage.UserRepository;
 @Qualifier("BookingServiceImpl")
 public class BookingServiceImpl implements BookingService {
     private final ItemRepository itemRepository;
+    private final ItemService itemService;
     private final UserRepository userRepository;
     private final BookingRepository bookingRepository;
     private final BookingMapper bookingMapper;
@@ -29,10 +33,12 @@ public class BookingServiceImpl implements BookingService {
 
     @Autowired
     public BookingServiceImpl(ItemRepository itemRepository,
+                              @Qualifier("ItemDBServiceImpl") ItemService itemService,
                               UserRepository userRepository,
                               BookingRepository bookingRepository,
                               BookingMapper bookingMapper) {
         this.itemRepository = itemRepository;
+        this.itemService = itemService;
         this.userRepository = userRepository;
         this.bookingRepository = bookingRepository;
         this.bookingMapper = bookingMapper;
@@ -56,5 +62,37 @@ public class BookingServiceImpl implements BookingService {
         log.info("Добавлен новый запрос на аренду {}.", booking);
 
         return bookingMapper.toBookingDto(booking);
+    }
+
+    @Override
+    public BookingDto approve(Long bookingId, Long userId, boolean approval) {
+        Booking booking = bookingRepository.findById(bookingId).orElseThrow(
+                () -> new NotFoundException("Заявка на аренду с id = " + bookingId + " не найдена.", log));
+
+        Item item = booking.getItem();
+
+        if (!itemService.isOwner(item, userId))
+            throw new AccessForbidden("Пользователь с id = " + userId + " не является владельцем вещи с id = " + item.getId() + ".", log);
+
+        User user = userRepository.findById(userId).orElseThrow(
+                () -> new NotFoundException("Пользователь с id = " + userId + " не найден.", log));
+
+        if (approval) toApprove(booking);
+        else toNotApprove(booking);
+
+        booking = bookingRepository.save(booking);
+
+        if (approval) log.info("Одобрена заявка на аренду {} .", booking);
+        else log.info("Не одобрена заявка на аренду {} .", booking);
+
+        return bookingMapper.toBookingDto(booking);
+    }
+
+    private void toApprove(Booking booking) {
+        booking.setStatus(StatusBooking.APPROVED);
+    }
+
+    private void toNotApprove(Booking booking) {
+        booking.setStatus(StatusBooking.REJECTED);
     }
 }

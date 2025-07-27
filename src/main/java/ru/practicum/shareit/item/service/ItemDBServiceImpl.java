@@ -136,4 +136,9 @@ public class ItemDBServiceImpl implements ItemService {
 
         return itemMapper.toItemDto(removeItem);
     }
+
+    @Override
+    public Boolean isOwner(Item item, Long userId) {
+        return item.getOwner().getId().equals(userId);
+    }
 }
