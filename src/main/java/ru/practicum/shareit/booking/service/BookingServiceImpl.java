@@ -150,7 +150,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     private Collection<Booking> getCurrentByBooker(User user) {
-        return null;    // todo
+        return bookingRepository.findByBookerCurrentBookings(user, Instant.now());
     }
 
     private Collection<Booking> getPastByBooker(User user) {
