@@ -118,7 +118,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public Collection<BookingDto> findByBooker(Long userId, String state) {
+    public Collection<BookingDto> findByBookerOrOwner(Long userId, String state, Boolean isOwner) {
         User user = userRepository.findById(userId).orElseThrow(
                 () -> new NotFoundException("Пользователь с id = " + userId + " не найден.", log));
 
@@ -132,12 +132,17 @@ public class BookingServiceImpl implements BookingService {
 
         Collection<Booking> bookingCollection = new ArrayList<>();
 
-        if (state.equalsIgnoreCase("ALL")) bookingCollection = getAllByBooker(user);
-        else if (state.equalsIgnoreCase("CURRENT")) bookingCollection = getCurrentByBooker(user);
-        else if (state.equalsIgnoreCase("PAST")) bookingCollection = getPastByBooker(user);
-        else if (state.equalsIgnoreCase("FUTURE")) bookingCollection = getFutureByBooker(user);
-        else if (state.equalsIgnoreCase("WAITING")) bookingCollection = getWaitingByBooker(user);
-        else if (state.equalsIgnoreCase("REJECTED")) bookingCollection = getRejectedByBooker(user);
+        if (state.equalsIgnoreCase("ALL")) bookingCollection = isOwner ? getAllByOwner(user) : getAllByBooker(user);
+        else if (state.equalsIgnoreCase("CURRENT"))
+            bookingCollection = isOwner ? getCurrentByOwner(user) : getCurrentByBooker(user);
+        else if (state.equalsIgnoreCase("PAST"))
+            bookingCollection = isOwner ? getPastByOwner(user) : getPastByBooker(user);
+        else if (state.equalsIgnoreCase("FUTURE"))
+            bookingCollection = isOwner ? getFutureByOwner(user) : getFutureByBooker(user);
+        else if (state.equalsIgnoreCase("WAITING"))
+            bookingCollection = isOwner ? getWaitingByOwner(user) : getWaitingByBooker(user);
+        else if (state.equalsIgnoreCase("REJECTED"))
+            bookingCollection = isOwner ? getRejectedByOwner(user) : getRejectedByBooker(user);
         else throw new NotFoundException("Значение параметра state е определено: " + state, log);
 
         return Objects.requireNonNull(bookingCollection).stream()
@@ -167,5 +172,29 @@ public class BookingServiceImpl implements BookingService {
 
     private Collection<Booking> getRejectedByBooker(User user) {
         return bookingRepository.findByBookerAndStatusOrderByIdDesc(user, StatusBooking.REJECTED);
+    }
+
+    private Collection<Booking> getAllByOwner(User user) {
+        return bookingRepository.findByOwnerOrderByIdDesc(user);
+    }
+
+    private Collection<Booking> getCurrentByOwner(User user) {
+        return bookingRepository.findByOwnerCurrentBookings(user, Instant.now());
+    }
+
+    private Collection<Booking> getPastByOwner(User user) {
+        return bookingRepository.findByOwnerAndEndLessThanOrderByIdDesc(user, Instant.now());
+    }
+
+    private Collection<Booking> getFutureByOwner(User user) {
+        return bookingRepository.findByOwnerAndStartGreaterThanOrderByIdDesc(user, Instant.now());
+    }
+
+    private Collection<Booking> getWaitingByOwner(User user) {
+        return bookingRepository.findByOwnerAndStatusOrderByIdDesc(user, StatusBooking.WAITING);
+    }
+
+    private Collection<Booking> getRejectedByOwner(User user) {
+        return bookingRepository.findByOwnerAndStatusOrderByIdDesc(user, StatusBooking.REJECTED);
     }
 }

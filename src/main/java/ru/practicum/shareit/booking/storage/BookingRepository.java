@@ -23,5 +23,45 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             "where b.booker = ?1 " +
             "and (?2 >= b.start) " +
             "and (b.end >= ?2)")
-    Collection<Booking> findByBookerCurrentBookings(User booker, Instant now);
+    Collection<Booking> findByBookerCurrentBookings(User booker, Instant instantNow);
+
+    @Query("select b " +
+            "from Booking b " +
+            "inner join b.item i " +
+            "where i.owner = ?1 " +
+            "order by b.id desc")
+    Collection<Booking> findByOwnerOrderByIdDesc(User owner);
+
+    @Query("select b " +
+            "from Booking b " +
+            "inner join b.item i " +
+            "where i.owner = ?1 " +
+            "and b.start > ?2 " +
+            "order by b.id desc")
+    Collection<Booking> findByOwnerAndStartGreaterThanOrderByIdDesc(User owner, Instant instantNow);
+
+    @Query("select b " +
+            "from Booking b " +
+            "inner join b.item i " +
+            "where i.owner = ?1 " +
+            "and b.status = ?2 " +
+            "order by b.id desc")
+    Collection<Booking> findByOwnerAndStatusOrderByIdDesc(User owner, StatusBooking statusBooking);
+
+    @Query("select b " +
+            "from Booking b " +
+            "inner join b.item i " +
+            "where i.owner = ?1 " +
+            "and ?2 > b.end " +
+            "order by b.id desc")
+    Collection<Booking> findByOwnerAndEndLessThanOrderByIdDesc(User owner, Instant instantNow);
+
+    @Query("select b " +
+            "from Booking b " +
+            "inner join b.item i " +
+            "where i.owner = ?1 " +
+            "and (?2 >= b.start) " +
+            "and (b.end >= ?2) " +
+            "order by b.id desc")
+    Collection<Booking> findByOwnerCurrentBookings(User owner, Instant instantNow);
 }
