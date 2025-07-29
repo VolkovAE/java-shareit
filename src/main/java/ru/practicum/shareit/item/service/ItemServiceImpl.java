@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.InternalServerException;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.ItemWithDateDto;
 import ru.practicum.shareit.item.dto.NewItemRequest;
 import ru.practicum.shareit.item.dto.UpdateItemRequest;
 import ru.practicum.shareit.item.mapper.ItemMapper;
@@ -59,19 +60,20 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public Collection<ItemDto> findAll(Long userId) {
-        if (userId == 0) {
-            return itemStorage.findAll().stream()
-                    .map(itemMapper::toItemDto)
-                    .toList();
-        } else {
-            User owner = userStorage.getById(userId).orElseThrow(
-                    () -> new NotFoundException("Пользователь с id = " + userId + " не найден.", log));
-
-            return itemStorage.findAll(owner).stream()
-                    .map(itemMapper::toItemDto)
-                    .toList();
-        }
+    public Collection<ItemWithDateDto> findAll(Long userId) {
+        return null;    // устаревшая реализация интерфейса
+//        if (userId == 0) {
+//            return itemStorage.findAll().stream()
+//                    .map(itemMapper::toItemDto)
+//                    .toList();
+//        } else {
+//            User owner = userStorage.getById(userId).orElseThrow(
+//                    () -> new NotFoundException("Пользователь с id = " + userId + " не найден.", log));
+//
+//            return itemStorage.findAll(owner).stream()
+//                    .map(itemMapper::toItemDto)
+//                    .toList();
+//        }
     }
 
     @Override

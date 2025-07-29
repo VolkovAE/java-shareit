@@ -6,9 +6,12 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.booking.model.Booking;
+import ru.practicum.shareit.booking.storage.BookingRepository;
 import ru.practicum.shareit.exception.InternalServerException;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.ItemWithDateDto;
 import ru.practicum.shareit.item.dto.NewItemRequest;
 import ru.practicum.shareit.item.dto.UpdateItemRequest;
 import ru.practicum.shareit.item.mapper.ItemMapper;
@@ -18,14 +21,17 @@ import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.storage.UserRepository;
 import ru.practicum.shareit.util.Reflection;
 
+import java.time.Instant;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @Qualifier("ItemDBServiceImpl")
 public class ItemDBServiceImpl implements ItemService {
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
+    private final BookingRepository bookingRepository;
     private final ItemMapper itemMapper;
 
     private static final Logger log = LoggerFactory.getLogger(ItemDBServiceImpl.class);
@@ -33,9 +39,11 @@ public class ItemDBServiceImpl implements ItemService {
     @Autowired
     public ItemDBServiceImpl(ItemRepository itemRepository,
                              UserRepository userRepository,
+                             BookingRepository bookingRepository,
                              ItemMapper itemMapper) {
         this.itemRepository = itemRepository;
         this.userRepository = userRepository;
+        this.bookingRepository = bookingRepository;
         this.itemMapper = itemMapper;
     }
 
@@ -64,17 +72,29 @@ public class ItemDBServiceImpl implements ItemService {
     }
 
     @Override
-    public Collection<ItemDto> findAll(Long userId) {
+    public Collection<ItemWithDateDto> findAll(Long userId) {
         User owner = userRepository.findById(userId).orElseThrow(
                 () -> new NotFoundException("Пользователь с id = " + userId + " не найден.", log));
 
         log.info("Получен список вещей пользователя {}.", owner);
 
-        return itemRepository.findByOwner(owner).stream()
-                .map(itemMapper::toItemDto)
+        Collection<Item> items = itemRepository.findByOwner(owner);
+
+        Instant instantNow = Instant.now();
+
+        return items.stream()
+                .map(item -> {
+                    Booking lastBooking = bookingRepository.findByItemLastBooking(item, instantNow);
+                    Booking nextBooking = bookingRepository.findByItemNextBooking(item, instantNow);
+
+                    Instant lastStart = Objects.isNull(lastBooking) ? null : lastBooking.getStart();
+                    Instant nextStart = Objects.isNull(nextBooking) ? null : nextBooking.getStart();
+
+                    return itemMapper.toItemWithDateDto(item, lastStart, nextStart);
+                })
                 .toList();
     }
-
+    
     @Override
     public Collection<ItemDto> findAllByText(String textSearch) {
         if (textSearch.isBlank()) return List.of();

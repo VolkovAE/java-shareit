@@ -4,6 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.StatusBooking;
+import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
 
 import java.time.Instant;
@@ -64,4 +65,20 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             "and (b.end >= ?2) " +
             "order by b.id desc")
     Collection<Booking> findByOwnerCurrentBookings(User owner, Instant instantNow);
+
+    @Query("select b " +
+            "from Booking b " +
+            "where b.item = ?1 " +
+            "and b.start <= ?2 " +
+            "order by b.start desc " +
+            "limit 1")
+    Booking findByItemLastBooking(Item item, Instant instantNow);
+
+    @Query("select b " +
+            "from Booking b " +
+            "where b.item = ?1 " +
+            "and b.start > ?2 " +
+            "order by b.start " +
+            "limit 1")
+    Booking findByItemNextBooking(Item item, Instant instantNow);
 }
