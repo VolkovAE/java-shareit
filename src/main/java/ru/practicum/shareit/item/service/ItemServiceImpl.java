@@ -7,10 +7,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.InternalServerException;
 import ru.practicum.shareit.exception.NotFoundException;
-import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.item.dto.ItemWithDateDto;
-import ru.practicum.shareit.item.dto.NewItemRequest;
-import ru.practicum.shareit.item.dto.UpdateItemRequest;
+import ru.practicum.shareit.item.dto.*;
 import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.storage.ItemStorage;
@@ -134,5 +131,10 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public Boolean isOwner(Item item, Long userId) {
         return item.getOwner().getId().equals(userId);
+    }
+
+    @Override
+    public CommentDto addComment(Long itemId, Long userId, NewCommentRequest commentRequest) {
+        return null;
     }
 }

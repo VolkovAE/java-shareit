@@ -9,10 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.item.dto.ItemWithDateDto;
-import ru.practicum.shareit.item.dto.NewItemRequest;
-import ru.practicum.shareit.item.dto.UpdateItemRequest;
+import ru.practicum.shareit.item.dto.*;
 import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.validation.Marker;
 
@@ -79,5 +76,13 @@ public class ItemController {
         // обработчик выполняется после успешной валидации полей
 
         return itemService.delete(itemId, userId);
+    }
+
+    @PostMapping("/{itemId}/comment")
+    @Validated(Marker.OnCreate.class)
+    public CommentDto addComment(@PathVariable(name = "itemId") @Positive Long itemId,
+                                 @RequestHeader(name = "X-Sharer-User-Id", required = true) @Positive Long userId,
+                                 @RequestBody @Valid NewCommentRequest commentRequest) {
+        return itemService.addComment(itemId, userId, commentRequest);
     }
 }

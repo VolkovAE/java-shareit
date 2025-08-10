@@ -81,4 +81,14 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             "order by b.start " +
             "limit 1")
     Booking findByItemNextBooking(Item item, Instant instantNow);
+
+    @Query("select b " +
+            "from Booking b " +
+            "where b.status = StatusBooking.APPROVED " +
+            "and b.item = ?1 " +
+            "and b.booker = ?2 " +
+            "and b.end < ?3 " +
+            "order by b.start " +
+            "limit 1")
+    Booking findByItemAndBookerFirstCloseBooking(Item item, User booker, Instant instantNow);
 }

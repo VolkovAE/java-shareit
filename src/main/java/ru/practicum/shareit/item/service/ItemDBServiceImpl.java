@@ -8,20 +8,22 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.storage.BookingRepository;
+import ru.practicum.shareit.exception.ForbindenCreateComment;
 import ru.practicum.shareit.exception.InternalServerException;
 import ru.practicum.shareit.exception.NotFoundException;
-import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.item.dto.ItemWithDateDto;
-import ru.practicum.shareit.item.dto.NewItemRequest;
-import ru.practicum.shareit.item.dto.UpdateItemRequest;
+import ru.practicum.shareit.item.dto.*;
 import ru.practicum.shareit.item.mapper.ItemMapper;
+import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.item.storage.CommentRepository;
 import ru.practicum.shareit.item.storage.ItemRepository;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.storage.UserRepository;
 import ru.practicum.shareit.util.Reflection;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
@@ -32,6 +34,7 @@ public class ItemDBServiceImpl implements ItemService {
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
     private final BookingRepository bookingRepository;
+    private final CommentRepository commentRepository;
     private final ItemMapper itemMapper;
 
     private static final Logger log = LoggerFactory.getLogger(ItemDBServiceImpl.class);
@@ -40,10 +43,12 @@ public class ItemDBServiceImpl implements ItemService {
     public ItemDBServiceImpl(ItemRepository itemRepository,
                              UserRepository userRepository,
                              BookingRepository bookingRepository,
+                             CommentRepository commentRepository,
                              ItemMapper itemMapper) {
         this.itemRepository = itemRepository;
         this.userRepository = userRepository;
         this.bookingRepository = bookingRepository;
+        this.commentRepository = commentRepository;
         this.itemMapper = itemMapper;
     }
 
@@ -94,7 +99,7 @@ public class ItemDBServiceImpl implements ItemService {
                 })
                 .toList();
     }
-    
+
     @Override
     public Collection<ItemDto> findAllByText(String textSearch) {
         if (textSearch.isBlank()) return List.of();
@@ -160,5 +165,32 @@ public class ItemDBServiceImpl implements ItemService {
     @Override
     public Boolean isOwner(Item item, Long userId) {
         return item.getOwner().getId().equals(userId);
+    }
+
+    @Override
+    public CommentDto addComment(Long itemId, Long userId, NewCommentRequest commentRequest) {
+        // проверяем, что пользователь с таким id существует
+        User user = userRepository.findById(userId).orElseThrow(
+                () -> new NotFoundException("Пользователь с id = " + userId + " не найден.", log));
+
+        // проверяем, что вещь с таким id существует
+        Item item = itemRepository.findById(itemId).orElseThrow(
+                () -> new NotFoundException("Вещь с id = " + itemId + " не найдена.", log));
+
+        LocalDateTime localDateTime = LocalDateTime.ofInstant(Instant.now(), ZoneOffset.UTC);
+
+        // проверяем, что пользователь арендовал вещь и заявка закрыта
+        Booking booking = bookingRepository.findByItemAndBookerFirstCloseBooking(item, user, Instant.now());
+        if (Objects.isNull(booking))
+            throw new ForbindenCreateComment("У пользователя с id = " + userId + " нет закрытых заявок на " +
+                    "аренду вещи с id = " + itemId + ". В создании отзыва отказано.", log);
+
+        Comment comment = itemMapper.toComment(commentRequest, item, user);
+
+        comment = commentRepository.save(comment);
+
+        log.info("Пользователем {} добавлен комментарий {} к арендованной им ранее вещи {}.", user, comment, item);
+
+        return itemMapper.toCommentDto(comment);
     }
 }

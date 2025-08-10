@@ -3,8 +3,11 @@ package ru.practicum.shareit.booking.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Null;
+import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.FieldDefaults;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.validation.FieldDescription;
@@ -19,6 +22,8 @@ import java.time.Instant;
 @Table(name = "Bookings")
 @Setter
 @Getter
+@EqualsAndHashCode(of = {"id"})
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class Booking {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

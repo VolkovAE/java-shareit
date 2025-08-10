@@ -6,10 +6,8 @@ import org.mapstruct.MappingConstants;
 import org.mapstruct.Named;
 import org.mapstruct.factory.Mappers;
 import org.springframework.stereotype.Component;
-import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.item.dto.ItemWithDateDto;
-import ru.practicum.shareit.item.dto.NewItemRequest;
-import ru.practicum.shareit.item.dto.UpdateItemRequest;
+import ru.practicum.shareit.item.dto.*;
+import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.mapper.IgnoreUnmappedMapperConfig;
 import ru.practicum.shareit.user.model.User;
@@ -48,4 +46,20 @@ public interface ItemMapper {
         if (Objects.isNull(instant)) return null;
         else return LocalDateTime.ofInstant(instant, ZoneOffset.UTC);
     }
+
+    @Mapping(ignore = true, target = "id")
+    @Mapping(source = "request.text", target = "text")
+    @Mapping(source = "item", target = "item")
+    @Mapping(source = "author", target = "author")
+    @Mapping(source = "request", target = "created", qualifiedByName = "getInstantNow")
+    Comment toComment(NewCommentRequest request, Item item, User author);
+
+    @Named("getInstantNow")
+    default Instant getInstantNow(NewCommentRequest request) {
+        return Instant.now();
+    }
+
+    @Mapping(source = "comment.author.name", target = "authorName")
+    @Mapping(source = "comment.created", target = "created", qualifiedByName = "toLocalDateTime")
+    CommentDto toCommentDto(Comment comment);
 }

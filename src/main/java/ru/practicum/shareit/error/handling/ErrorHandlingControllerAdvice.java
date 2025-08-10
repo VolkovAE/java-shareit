@@ -112,6 +112,15 @@ public class ErrorHandlingControllerAdvice {
         return new ValidationErrorResponse(violationList);
     }
 
+    @ExceptionHandler(ForbindenCreateComment.class)
+    @ResponseStatus(HttpStatus.CONFLICT)//HttpStatus.BAD_REQUEST)
+    public ValidationErrorResponse onForbindenCreateComment(ForbindenCreateComment e) {
+        Violation violation = new Violation("-", e.getMessage());
+        List<Violation> violationList = List.of(violation);
+
+        return new ValidationErrorResponse(violationList);
+    }
+
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorResponse runtimeException(RuntimeException e) {

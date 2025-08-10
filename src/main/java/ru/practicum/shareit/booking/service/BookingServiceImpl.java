@@ -143,7 +143,7 @@ public class BookingServiceImpl implements BookingService {
             bookingCollection = isOwner ? getWaitingByOwner(user) : getWaitingByBooker(user);
         else if (state.equalsIgnoreCase("REJECTED"))
             bookingCollection = isOwner ? getRejectedByOwner(user) : getRejectedByBooker(user);
-        else throw new NotFoundException("Значение параметра state е определено: " + state, log);
+        else throw new NotFoundException("Значение параметра state не определено: " + state, log);
 
         return Objects.requireNonNull(bookingCollection).stream()
                 .map(bookingMapper::toBookingDto)
