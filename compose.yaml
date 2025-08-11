@@ -7,8 +7,8 @@ services:
       - ./db/volumes/postgres:/var/lib/postgresql/data/
     environment:
       - POSTGRES_DB=ShareIt
-      - POSTGRES_USER=dbuser
-      - POSTGRES_PASSWORD=12345
+      - POSTGRES_USER=sa  #dbuser
+      - POSTGRES_PASSWORD=password  #12345
     healthcheck:
       test: pg_isready -q -d $$POSTGRES_DB -U $$POSTGRES_USER
       timeout: 5s
