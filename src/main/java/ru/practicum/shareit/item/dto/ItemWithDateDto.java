@@ -9,6 +9,7 @@ import lombok.experimental.FieldDefaults;
 import ru.practicum.shareit.validation.FieldDescription;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * ItemDto with date.
@@ -41,4 +42,8 @@ public class ItemWithDateDto {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     @FieldDescription("Дата следующего бронирования")
     LocalDateTime nextBooking;
+
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @FieldDescription("Список комментариев от пользователей, которые арендовали эту вещь.")
+    List<CommentDto> commentDtoList;
 }

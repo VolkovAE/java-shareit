@@ -42,8 +42,9 @@ public class ItemController {
     }
 
     @GetMapping("/{id}")
-    public ItemDto findById(@PathVariable(name = "id") @Positive Long itemId) {
-        return itemService.getById(itemId);
+    public ItemWithDateDto findById(@PathVariable(name = "id") @Positive Long itemId,
+                                    @RequestHeader(name = "X-Sharer-User-Id", required = true) @Positive Long userId) {
+        return itemService.getById(itemId, userId);
     }
 
     @GetMapping

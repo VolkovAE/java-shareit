@@ -49,11 +49,11 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public ItemDto getById(Long itemId) {
+    public ItemWithDateDto getById(Long itemId, Long userId) {
         Item item = itemStorage.getById(itemId).orElseThrow(
                 () -> new NotFoundException("Вещь с id = " + itemId + " не найдена.", log));
 
-        return itemMapper.toItemDto(item);
+        return null;    //itemMapper.toItemDto(item);
     }
 
     @Override

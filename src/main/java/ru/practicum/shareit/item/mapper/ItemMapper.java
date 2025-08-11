@@ -8,6 +8,7 @@ import org.mapstruct.factory.Mappers;
 import org.springframework.stereotype.Component;
 import ru.practicum.shareit.item.dto.*;
 import ru.practicum.shareit.item.model.Comment;
+import ru.practicum.shareit.item.model.DateLastNextBooking;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.mapper.IgnoreUnmappedMapperConfig;
 import ru.practicum.shareit.user.model.User;
@@ -15,6 +16,7 @@ import ru.practicum.shareit.user.model.User;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.List;
 import java.util.Objects;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING, config = IgnoreUnmappedMapperConfig.class)
@@ -37,9 +39,10 @@ public interface ItemMapper {
 
     ItemDto toItemDto(Item item);
 
-    @Mapping(source = "lastBooking", target = "lastBooking", qualifiedByName = "toLocalDateTime")
-    @Mapping(source = "nextBooking", target = "nextBooking", qualifiedByName = "toLocalDateTime")
-    ItemWithDateDto toItemWithDateDto(Item item, Instant lastBooking, Instant nextBooking);
+    @Mapping(source = "dateLastNextBooking.lastStart", target = "lastBooking", qualifiedByName = "toLocalDateTime")
+    @Mapping(source = "dateLastNextBooking.nextStart", target = "nextBooking", qualifiedByName = "toLocalDateTime")
+    @Mapping(source = "commentDtoList", target = "commentDtoList")
+    ItemWithDateDto toItemWithDateDto(Item item, DateLastNextBooking dateLastNextBooking, List<CommentDto> commentDtoList);
 
     @Named("toLocalDateTime")
     default LocalDateTime toLocalDateTime(Instant instant) {

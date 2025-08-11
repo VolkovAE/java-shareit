@@ -113,7 +113,7 @@ public class ErrorHandlingControllerAdvice {
     }
 
     @ExceptionHandler(ForbindenCreateComment.class)
-    @ResponseStatus(HttpStatus.CONFLICT)//HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ValidationErrorResponse onForbindenCreateComment(ForbindenCreateComment e) {
         Violation violation = new Violation("-", e.getMessage());
         List<Violation> violationList = List.of(violation);

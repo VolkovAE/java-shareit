@@ -8,7 +8,7 @@ import java.util.Collection;
 public interface ItemService {
     ItemDto add(NewItemRequest itemRequest, Long userId);
 
-    ItemDto getById(Long itemId);
+    ItemWithDateDto getById(Long itemId, Long userId);
 
     Collection<ItemWithDateDto> findAll(Long userId);
 
