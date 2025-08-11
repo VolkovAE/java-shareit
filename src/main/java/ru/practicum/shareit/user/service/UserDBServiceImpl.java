@@ -37,6 +37,12 @@ public class UserDBServiceImpl implements UserService {
 
     @Override
     public UserDto add(NewUserRequest userRequest) {
+        // В СУБД H2 не срабатывает ограничение UNIQUE, поэтому добавил проверку на повторное использование имейла
+        // перед началом добавления пользователя.
+        if (!isEmailFree(userRequest.getEmail()))
+            throw new DuplicatedDataException(String.format("Нельзя добавить пользователя %s " +
+                    "по причине: нельзя использовать имейл, который уже используется - %s.", userRequest, userRequest.getEmail()), log);
+
         User user = userMapper.toUser(userRequest);
 
         user = userRepository.save(user);
