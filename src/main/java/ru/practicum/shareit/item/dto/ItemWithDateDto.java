@@ -43,7 +43,7 @@ public class ItemWithDateDto {
     @FieldDescription("Дата следующего бронирования")
     LocalDateTime nextBooking;
 
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @JsonProperty(value = "comments", access = JsonProperty.Access.READ_ONLY)
     @FieldDescription("Список комментариев от пользователей, которые арендовали эту вещь.")
     List<CommentDto> commentDtoList;
 }

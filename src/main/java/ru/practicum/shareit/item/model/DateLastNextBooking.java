@@ -23,6 +23,15 @@ public class DateLastNextBooking {
     @Getter
     Instant nextStart;
 
+    public DateLastNextBooking() {
+        this.item = null;
+        this.bookingRepository = null;
+        this.instantNow = null;
+
+        lastStart = null;
+        nextStart = null;
+    }
+
     public DateLastNextBooking(Item item, BookingRepository bookingRepository, Instant instantNow) {
         this.item = item;
         this.bookingRepository = bookingRepository;

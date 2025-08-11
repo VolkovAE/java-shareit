@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.storage.BookingRepository;
-import ru.practicum.shareit.exception.AccessForbidden;
 import ru.practicum.shareit.exception.ForbindenCreateComment;
 import ru.practicum.shareit.exception.InternalServerException;
 import ru.practicum.shareit.exception.NotFoundException;
@@ -73,21 +72,15 @@ public class ItemDBServiceImpl implements ItemService {
         Item item = itemRepository.findById(itemId).orElseThrow(
                 () -> new NotFoundException("Вещь с id = " + itemId + " не найдена.", log));
 
-        User owner = userRepository.findById(userId).orElseThrow(
+        User user = userRepository.findById(userId).orElseThrow(
                 () -> new NotFoundException("Пользователь с id = " + userId + " не найден.", log));
-
-        if (!isOwner(item, userId))
-            throw new AccessForbidden("Пользователь с id = " + userId + " не является владельцем вещи с id = " + item.getId() + ".", log);
-
-        Instant instantNow = Instant.now();
-        DateLastNextBooking dateLastNextBooking = new DateLastNextBooking(item, bookingRepository, instantNow);
 
         List<Comment> comments = commentRepository.findByItemOrderByCreatedDesc(item);
         List<CommentDto> commentDtoList = Objects.isNull(comments) ? null : comments.stream().map(itemMapper::toCommentDto).toList();
 
-        log.info("Предоставлены данные по вещи (с датами посл./след. аренды) {} для владельца {}.", item, owner);
+        log.info("Предоставлены данные по вещи (с датами null посл./след. аренды) {} для пользователя {}.", item, user);
 
-        return itemMapper.toItemWithDateDto(item, dateLastNextBooking, commentDtoList);
+        return itemMapper.toItemWithDateDto(item, new DateLastNextBooking(), commentDtoList);
     }
 
     @Override
