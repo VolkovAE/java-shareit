@@ -15,6 +15,8 @@ import ru.practicum.shareit.validation.Marker;
 
 import java.util.Collection;
 
+import static ru.practicum.shareit.util.StringConstantsForRequest.*;
+
 /**
  * add-bookings.
  */
@@ -33,33 +35,33 @@ public class BookingController {
 
     @PostMapping
     @Validated(Marker.OnCreate.class)
-    public BookingDto add(@RequestHeader(name = "X-Sharer-User-Id", required = true) @Positive Long userId,
+    public BookingDto add(@RequestHeader(name = NAME_HEADER_USER_ID, required = true) @Positive Long userId,
                           @RequestBody @Valid NewBookingRequest newBookingRequest) {
         return bookingService.add(newBookingRequest, userId);
     }
 
     @PatchMapping("/{bookingId}")
-    public BookingDto approve(@RequestHeader(name = "X-Sharer-User-Id", required = true) @Positive Long userId,
-                              @PathVariable(name = "bookingId", required = true) @Positive Long bookingId,
-                              @RequestParam(name = "approved", required = true) Boolean approval) {
+    public BookingDto approve(@RequestHeader(name = NAME_HEADER_USER_ID, required = true) @Positive Long userId,
+                              @PathVariable(name = PATH_VARIABLE_BOOKING_ID, required = true) @Positive Long bookingId,
+                              @RequestParam(name = REQUEST_PARAM_APPROVED, required = true) Boolean approval) {
         return bookingService.approve(bookingId, userId, approval);
     }
 
     @GetMapping("/{bookingId}")
-    public BookingDto findById(@RequestHeader(name = "X-Sharer-User-Id", required = true) @Positive Long userId,
-                               @PathVariable(name = "bookingId", required = true) @Positive Long bookingId) {
+    public BookingDto findById(@RequestHeader(name = NAME_HEADER_USER_ID, required = true) @Positive Long userId,
+                               @PathVariable(name = PATH_VARIABLE_BOOKING_ID, required = true) @Positive Long bookingId) {
         return bookingService.findById(bookingId, userId);
     }
 
     @GetMapping
-    public Collection<BookingDto> findByBooker(@RequestHeader(name = "X-Sharer-User-Id", required = true) @Positive Long userId,
-                                               @RequestParam(name = "state", required = false, defaultValue = "ALL") String state) {
+    public Collection<BookingDto> findByBooker(@RequestHeader(name = NAME_HEADER_USER_ID, required = true) @Positive Long userId,
+                                               @RequestParam(name = REQUEST_PARAM_STATE, required = false, defaultValue = DEFAULT_VALUE_REQUEST_PARAM_STATE) String state) {
         return bookingService.findByBookerOrOwner(userId, state, false);
     }
 
     @GetMapping("/owner")
-    public Collection<BookingDto> findByOwner(@RequestHeader(name = "X-Sharer-User-Id", required = true) @Positive Long userId,
-                                              @RequestParam(name = "state", required = false, defaultValue = "ALL") String state) {
+    public Collection<BookingDto> findByOwner(@RequestHeader(name = NAME_HEADER_USER_ID, required = true) @Positive Long userId,
+                                              @RequestParam(name = REQUEST_PARAM_STATE, required = false, defaultValue = DEFAULT_VALUE_REQUEST_PARAM_STATE) String state) {
         return bookingService.findByBookerOrOwner(userId, state, true);
     }
 }

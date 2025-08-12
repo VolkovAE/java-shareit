@@ -9,7 +9,6 @@ spring:
       schema-locations: "classpath:/DB/DDL/schema.sql"
       data-locations: "classpath:/DB/Init/data.sql"
   jpa:
-    #database-platform: org.hibernate.dialect.H2Dialect
     show-sql: true  # включаем логирование всех SQL-запросов выполненных JPA
     format_sql: true  # вывод SQL-запросов в логе в формате SQL
     ddl-auto: none  # создаем таблицы БД и наполняем их тестовыми данными скриптами schema.sql, data.sql
@@ -17,11 +16,11 @@ spring:
       hibernate:
         jdbc:
           time_zone: UTC  # часовой пояс при чтении записи значений столбцов с типом timestamp
-    # настраиваем подключение к источнику данных
+  # настраиваем подключение к источнику данных
   datasource:
     driverClassName: "org.postgresql.Driver"
     url: "jdbc:postgresql://localhost:5432/ShareIt"
-    username: dbuser"
+    username: "dbuser"
     password: "12345"
 logging:
   level:
