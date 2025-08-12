@@ -23,7 +23,7 @@ public class NewBookingRequest {
     @NotNull(message = "При создании запроса должно быть указано начало периода аренды.",
             groups = Marker.OnCreate.class)
     @FutureOrPresent(message = "Дата начала бронирования не может быть в прошлом.")
-    @FieldDescription("Дата и время начала бронирования;")
+    @FieldDescription("Дата и время начала бронирования")
     LocalDateTime start;
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
