@@ -2,9 +2,11 @@ package ru.practicum.shareit.user;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.user.dto.NewUserRequest;
@@ -14,6 +16,8 @@ import ru.practicum.shareit.user.service.UserService;
 import ru.practicum.shareit.validation.Marker;
 
 import java.util.Collection;
+
+import static ru.practicum.shareit.util.StringConstantsForRequest.*;
 
 /**
  * Контроллер сущности User.
@@ -27,7 +31,7 @@ public class UserController {
     private static final Logger log = LoggerFactory.getLogger(UserController.class);
 
     @Autowired
-    public UserController(UserService userService) {
+    public UserController(@Qualifier("UserDBServiceImpl") UserService userService) {
         this.userService = userService;
     }
 
@@ -41,18 +45,19 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public UserDto findById(@PathVariable(name = "id") @Positive Long userId) {
+    public UserDto findById(@PathVariable(name = PATH_VARIABLE_ID) @Positive Long userId) {
         return userService.getById(userId);
     }
 
     @GetMapping
-    public Collection<UserDto> findAll() {
-        return userService.findAll();
+    public Collection<UserDto> findAll(@RequestParam(name = REQUEST_PARAM_PAGE, defaultValue = DEFAULT_VALUE_0) @PositiveOrZero int page,
+                                       @RequestParam(name = REQUEST_PARAM_COUNT, defaultValue = DEFAULT_VALUE_REQUEST_PARAM_COUNT) @Positive int count) {
+        return userService.findAll(page, count);
     }
 
     @PatchMapping("/{id}")
     @Validated(Marker.OnUpdate.class)
-    public UserDto update(@PathVariable(name = "id") @Positive Long userId,
+    public UserDto update(@PathVariable(name = PATH_VARIABLE_ID) @Positive Long userId,
                           @RequestBody @Valid UpdateUserRequest userRequest) {
         // проверку выполнения необходимых условий осуществил через валидацию полей
         // обработчик выполняется после успешной валидации полей
@@ -62,7 +67,7 @@ public class UserController {
 
     @DeleteMapping("/{id}")
     @Validated(Marker.OnDelete.class)
-    public UserDto delete(@PathVariable(name = "id") @Positive Long userId) {
+    public UserDto delete(@PathVariable(name = PATH_VARIABLE_ID) @Positive Long userId) {
         // проверку выполнения необходимых условий осуществил через валидацию полей
         // обработчик выполняется после успешной валидации полей
 

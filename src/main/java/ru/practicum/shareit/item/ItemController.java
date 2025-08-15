@@ -9,13 +9,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.item.dto.NewItemRequest;
-import ru.practicum.shareit.item.dto.UpdateItemRequest;
+import ru.practicum.shareit.item.dto.*;
 import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.validation.Marker;
 
 import java.util.Collection;
+
+import static ru.practicum.shareit.util.StringConstantsForRequest.*;
 
 /**
  * Контроллер сущности Item.
@@ -29,13 +29,13 @@ public class ItemController {
     private static final Logger log = LoggerFactory.getLogger(ItemController.class);
 
     @Autowired
-    public ItemController(@Qualifier("ItemServiceImpl") ItemService itemService) {
+    public ItemController(@Qualifier("ItemDBServiceImpl") ItemService itemService) {
         this.itemService = itemService;
     }
 
     @PostMapping
     @Validated(Marker.OnCreate.class)
-    public ItemDto add(@RequestHeader(name = "X-Sharer-User-Id", required = true) @Positive Long userId,
+    public ItemDto add(@RequestHeader(name = NAME_HEADER_USER_ID, required = true) @Positive Long userId,
                        @RequestBody @Valid NewItemRequest itemRequest) {
         // проверку выполнения необходимых условий осуществил через валидацию полей
         // обработчик выполняется после успешной валидации полей
@@ -44,25 +44,26 @@ public class ItemController {
     }
 
     @GetMapping("/{id}")
-    public ItemDto findById(@PathVariable(name = "id") @Positive Long itemId) {
-        return itemService.getById(itemId);
+    public ItemWithDateDto findById(@PathVariable(name = PATH_VARIABLE_ID) @Positive Long itemId,
+                                    @RequestHeader(name = NAME_HEADER_USER_ID, required = true) @Positive Long userId) {
+        return itemService.getById(itemId, userId);
     }
 
     @GetMapping
-    public Collection<ItemDto> findAll(@RequestHeader(name = "X-Sharer-User-Id", required = false, defaultValue = "0")
-                                       @PositiveOrZero Long userId) {
+    public Collection<ItemWithDateDto> findAll(@RequestHeader(name = NAME_HEADER_USER_ID, required = false, defaultValue = DEFAULT_VALUE_0)
+                                               @PositiveOrZero Long userId) {
         return itemService.findAll(userId);
     }
 
     @GetMapping("/search")
-    public Collection<ItemDto> findAllByText(@RequestParam(name = "text", required = true) String textSearch) {
+    public Collection<ItemDto> findAllByText(@RequestParam(name = REQUEST_PARAM_TEXT, required = true) String textSearch) {
         return itemService.findAllByText(textSearch);
     }
 
     @PatchMapping("/{id}")
     @Validated(Marker.OnUpdate.class)
-    public ItemDto update(@PathVariable(name = "id") @Positive Long itemId,
-                          @RequestHeader(name = "X-Sharer-User-Id", required = true) @Positive Long userId,
+    public ItemDto update(@PathVariable(name = PATH_VARIABLE_ID) @Positive Long itemId,
+                          @RequestHeader(name = NAME_HEADER_USER_ID, required = true) @Positive Long userId,
                           @RequestBody @Valid UpdateItemRequest itemRequest) {
         // проверку выполнения необходимых условий осуществил через валидацию полей
         // обработчик выполняется после успешной валидации полей
@@ -72,11 +73,19 @@ public class ItemController {
 
     @DeleteMapping("/{id}")
     @Validated(Marker.OnDelete.class)
-    public ItemDto delete(@PathVariable(name = "id") @Positive Long itemId,
-                          @RequestHeader(name = "X-Sharer-User-Id", required = true) @Positive Long userId) {
+    public ItemDto delete(@PathVariable(name = PATH_VARIABLE_ID) @Positive Long itemId,
+                          @RequestHeader(name = NAME_HEADER_USER_ID, required = true) @Positive Long userId) {
         // проверку выполнения необходимых условий осуществил через валидацию полей
         // обработчик выполняется после успешной валидации полей
 
         return itemService.delete(itemId, userId);
+    }
+
+    @PostMapping("/{itemId}/comment")
+    @Validated(Marker.OnCreate.class)
+    public CommentDto addComment(@PathVariable(name = PATH_VARIABLE_ITEM_ID) @Positive Long itemId,
+                                 @RequestHeader(name = NAME_HEADER_USER_ID, required = true) @Positive Long userId,
+                                 @RequestBody @Valid NewCommentRequest commentRequest) {
+        return itemService.addComment(itemId, userId, commentRequest);
     }
 }

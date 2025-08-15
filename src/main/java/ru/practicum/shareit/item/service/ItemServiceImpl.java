@@ -7,9 +7,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.InternalServerException;
 import ru.practicum.shareit.exception.NotFoundException;
-import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.item.dto.NewItemRequest;
-import ru.practicum.shareit.item.dto.UpdateItemRequest;
+import ru.practicum.shareit.item.dto.*;
 import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.storage.ItemStorage;
@@ -19,6 +17,7 @@ import ru.practicum.shareit.user.storage.UserStorage;
 import java.util.Collection;
 import java.util.List;
 
+@Deprecated
 @Service
 @Qualifier("ItemServiceImpl")
 public class ItemServiceImpl implements ItemService {
@@ -50,27 +49,28 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public ItemDto getById(Long itemId) {
+    public ItemWithDateDto getById(Long itemId, Long userId) {
         Item item = itemStorage.getById(itemId).orElseThrow(
                 () -> new NotFoundException("Вещь с id = " + itemId + " не найдена.", log));
 
-        return itemMapper.toItemDto(item);
+        return null;    //itemMapper.toItemDto(item);
     }
 
     @Override
-    public Collection<ItemDto> findAll(Long userId) {
-        if (userId == 0) {
-            return itemStorage.findAll().stream()
-                    .map(itemMapper::toItemDto)
-                    .toList();
-        } else {
-            User owner = userStorage.getById(userId).orElseThrow(
-                    () -> new NotFoundException("Пользователь с id = " + userId + " не найден.", log));
-
-            return itemStorage.findAll(owner).stream()
-                    .map(itemMapper::toItemDto)
-                    .toList();
-        }
+    public Collection<ItemWithDateDto> findAll(Long userId) {
+        return null;    // устаревшая реализация интерфейса
+//        if (userId == 0) {
+//            return itemStorage.findAll().stream()
+//                    .map(itemMapper::toItemDto)
+//                    .toList();
+//        } else {
+//            User owner = userStorage.getById(userId).orElseThrow(
+//                    () -> new NotFoundException("Пользователь с id = " + userId + " не найден.", log));
+//
+//            return itemStorage.findAll(owner).stream()
+//                    .map(itemMapper::toItemDto)
+//                    .toList();
+//        }
     }
 
     @Override
@@ -126,5 +126,15 @@ public class ItemServiceImpl implements ItemService {
         removeItem = itemStorage.delete(removeItem);
 
         return itemMapper.toItemDto(removeItem);
+    }
+
+    @Override
+    public Boolean isOwner(Item item, Long userId) {
+        return item.getOwner().getId().equals(userId);
+    }
+
+    @Override
+    public CommentDto addComment(Long itemId, Long userId, NewCommentRequest commentRequest) {
+        return null;
     }
 }

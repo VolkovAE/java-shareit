@@ -1,6 +1,8 @@
 package ru.practicum.shareit.request.model;
 
-import lombok.Data;
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 import ru.practicum.shareit.user.model.User;
 
 import java.time.Instant;
@@ -8,10 +10,22 @@ import java.time.Instant;
 /**
  * TODO Sprint add-item-requests.
  */
-@Data
+@Entity
+@Table(name = "Requests")
+@Setter
+@Getter
 public class ItemRequest {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;    // уникальный идентификатор запроса;
+
+    @Column(name = "description")
     String description; // текст запроса, содержащий описание требуемой вещи;
+
+    @ManyToOne(optional = false, fetch = FetchType.EAGER)
+    @JoinColumn(name = "requestor_id", nullable = false)
     User requestor; // пользователь, создавший запрос;
+
+    @Column(name = "created")
     Instant created;    // дата и время создания запроса.
 }

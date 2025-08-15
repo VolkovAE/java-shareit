@@ -1,0 +1,33 @@
+# Append connection to DB
+spring:
+  application.name: ShareIt
+  main.banner-mode: OFF
+  sql:
+    init:
+      mode: always  # всегда инициализируем БД скриптами schema.sql, data.sql
+      continue-on-error: false  # если в SQL-скриптах есть ошибка, то не продолжаем загрузку приложения
+      schema-locations: "classpath:/DB/DDL/schema.sql"
+      data-locations: "classpath:/DB/Init/data.sql"
+  jpa:
+    show-sql: true  # включаем логирование всех SQL-запросов выполненных JPA
+    format_sql: true  # вывод SQL-запросов в логе в формате SQL
+    ddl-auto: none  # создаем таблицы БД и наполняем их тестовыми данными скриптами schema.sql, data.sql
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC  # часовой пояс при чтении записи значений столбцов с типом timestamp
+  # настраиваем подключение к источнику данных
+  datasource:
+    driverClassName: "org.postgresql.Driver"
+    url: "jdbc:postgresql://localhost:5432/ShareIt"
+    username: "dbuser"
+    password: "12345"
+logging:
+  level:
+    org:
+      springframework:
+        orm:
+          jpa: INFO
+          JpaTransactionManager: DEBUG
+        transaction: INFO
+        transaction.interceptor: TRACE
