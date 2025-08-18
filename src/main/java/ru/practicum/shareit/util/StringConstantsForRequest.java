@@ -9,6 +9,7 @@ public final class StringConstantsForRequest {
     public static final String PATH_VARIABLE_ITEM_ID = "itemId";
     public static final String REQUEST_PARAM_TEXT = "text";
     public static final String PATH_VARIABLE_BOOKING_ID = "bookingId";
+    public static final String PATH_VARIABLE_REQUEST_ID = "requestId";
     public static final String REQUEST_PARAM_STATE = "state";
     public static final String REQUEST_PARAM_PAGE = "page";
     public static final String REQUEST_PARAM_COUNT = "count";

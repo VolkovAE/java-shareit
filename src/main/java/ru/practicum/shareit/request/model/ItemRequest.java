@@ -8,7 +8,7 @@ import ru.practicum.shareit.user.model.User;
 import java.time.Instant;
 
 /**
- * TODO Sprint add-item-requests.
+ * Sprint add-item-requests.
  */
 @Entity
 @Table(name = "Requests")
