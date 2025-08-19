@@ -37,6 +37,9 @@ public interface ItemMapper {
 
     ItemDto toItemDto(Item item);
 
+    @Mapping(source = "item.owner.id", target = "ownerId")
+    ItemOnRequestDto toItemOnRequestDto(Item item);
+
     @Mapping(source = "dateLastNextBooking.lastStart", target = "lastBooking", qualifiedByName = "toLocalDateTime")
     @Mapping(source = "dateLastNextBooking.nextStart", target = "nextBooking", qualifiedByName = "toLocalDateTime")
     @Mapping(source = "commentDtoList", target = "commentDtoList")

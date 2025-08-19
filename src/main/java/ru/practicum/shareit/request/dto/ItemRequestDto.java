@@ -5,9 +5,11 @@ import lombok.AccessLevel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.FieldDefaults;
+import ru.practicum.shareit.item.dto.ItemOnRequestDto;
 import ru.practicum.shareit.validation.FieldDescription;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * Sprint add-item-requests.
@@ -27,4 +29,8 @@ public class ItemRequestDto {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     @FieldDescription(value = "Дата и время создания запроса")
     LocalDateTime created;
+
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @FieldDescription(value = "Список ответов")
+    List<ItemOnRequestDto> items;
 }

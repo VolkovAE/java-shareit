@@ -6,6 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.NotFoundException;
+import ru.practicum.shareit.item.dto.ItemOnRequestDto;
+import ru.practicum.shareit.item.mapper.ItemMapper;
+import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.item.storage.ItemRepository;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.dto.NewRequestItem;
 import ru.practicum.shareit.request.mapper.ItemRequestMapper;
@@ -15,21 +19,31 @@ import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.storage.UserRepository;
 
 import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
 
 @Service
 @Qualifier("ItemRequestServiceImpl")
 public class ItemRequestServiceImpl implements ItemRequestService {
     private final UserRepository userRepository;
+    private final ItemRepository itemRepository;
+    private final ItemMapper itemMapper;
     private final ItemRequestRepository itemRequestRepository;
     private final ItemRequestMapper itemRequestMapper;
+
 
     private static final Logger log = LoggerFactory.getLogger(ItemRequestServiceImpl.class);
 
     @Autowired
     public ItemRequestServiceImpl(UserRepository userRepository,
+                                  ItemRepository itemRepository,
+                                  ItemMapper itemMapper,
                                   ItemRequestRepository itemRequestRepository,
-                                  ItemRequestMapper itemRequestMapper) {
+                                  ItemRequestMapper itemRequestMapper
+    ) {
         this.userRepository = userRepository;
+        this.itemRepository = itemRepository;
+        this.itemMapper = itemMapper;
         this.itemRequestRepository = itemRequestRepository;
         this.itemRequestMapper = itemRequestMapper;
     }
@@ -50,7 +64,21 @@ public class ItemRequestServiceImpl implements ItemRequestService {
 
     @Override
     public Collection<ItemRequestDto> findAllMy(Long userId) {
-        return null;    // todo
+        User user = userRepository.findById(userId).orElseThrow(
+                () -> new NotFoundException("Пользователь с id = " + userId + " не найден.", log));
+
+        List<ItemRequest> itemRequestList = itemRequestRepository.findByRequestorOrderByCreatedDesc(user);
+
+        log.info("Получен список запросов вещей пользователя {}.", user);
+
+        return itemRequestList.stream()
+                .map(itemRequest -> {
+                    Collection<Item> items = itemRepository.findByRequestAndAvailableTrue(itemRequest);
+                    List<ItemOnRequestDto> itemOnRequestDtoList = Objects.isNull(items) ? null : items.stream().map(itemMapper::toItemOnRequestDto).toList();
+
+                    return itemRequestMapper.toItemRequestDto(itemRequest, itemOnRequestDtoList);
+                })
+                .toList();
     }
 
     @Override

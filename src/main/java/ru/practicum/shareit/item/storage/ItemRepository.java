@@ -4,6 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.user.model.User;
 
 import java.util.Collection;
@@ -20,4 +21,6 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
     Collection<Item> findByOwner(User user);
 
     Optional<Item> findByIdAndAvailableTrue(Long id);
+
+    Collection<Item> findByRequestAndAvailableTrue(ItemRequest itemRequest);
 }

@@ -5,6 +5,7 @@ import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
 import org.mapstruct.Named;
 import org.mapstruct.factory.Mappers;
+import ru.practicum.shareit.item.dto.ItemOnRequestDto;
 import ru.practicum.shareit.mapper.IgnoreUnmappedMapperConfig;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.dto.NewRequestItem;
@@ -14,6 +15,7 @@ import ru.practicum.shareit.user.model.User;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.List;
 import java.util.Objects;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING, config = IgnoreUnmappedMapperConfig.class)
@@ -33,6 +35,10 @@ public interface ItemRequestMapper {
 
     @Mapping(source = "itemRequest.created", target = "created", qualifiedByName = "toLocalDateTime")
     ItemRequestDto toItemRequestDto(ItemRequest itemRequest);
+
+    @Mapping(source = "itemRequest.created", target = "created", qualifiedByName = "toLocalDateTime")
+    @Mapping(source = "items", target = "items")
+    ItemRequestDto toItemRequestDto(ItemRequest itemRequest, List<ItemOnRequestDto> items);
 
     @Named("toLocalDateTime")
     default LocalDateTime toLocalDateTime(Instant instant) {
