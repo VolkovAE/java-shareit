@@ -97,6 +97,12 @@ public class ItemRequestServiceImpl implements ItemRequestService {
 
     @Override
     public ItemRequestDto findById(Long requestId) {
-        return null;    // todo
+        ItemRequest itemRequest = itemRequestRepository.findById(requestId).orElseThrow(
+                () -> new NotFoundException("Запрос на вещь с id = " + requestId + " не найден.", log));
+
+        Collection<Item> items = itemRepository.findByRequestAndAvailableTrue(itemRequest);
+        List<ItemOnRequestDto> itemOnRequestDtoList = Objects.isNull(items) ? null : items.stream().map(itemMapper::toItemOnRequestDto).toList();
+
+        return itemRequestMapper.toItemRequestDto(itemRequest, itemOnRequestDtoList);
     }
 }
