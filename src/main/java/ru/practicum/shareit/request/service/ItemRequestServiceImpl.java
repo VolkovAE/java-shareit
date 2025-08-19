@@ -83,7 +83,16 @@ public class ItemRequestServiceImpl implements ItemRequestService {
 
     @Override
     public Collection<ItemRequestDto> findAllOther(Long userId) {
-        return null;    // todo
+        User user = userRepository.findById(userId).orElseThrow(
+                () -> new NotFoundException("Пользователь с id = " + userId + " не найден.", log));
+
+        List<ItemRequest> itemRequestList = itemRequestRepository.findByRequestorNotOrderByCreatedDesc(user);
+
+        log.info("Получен список запросов вещей НЕ пользователя {}.", user);
+
+        return itemRequestList.stream()
+                .map(itemRequestMapper::toItemRequestDto)
+                .toList();
     }
 
     @Override
