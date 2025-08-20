@@ -18,6 +18,8 @@ import ru.practicum.shareit.item.model.DateLastNextBooking;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.storage.CommentRepository;
 import ru.practicum.shareit.item.storage.ItemRepository;
+import ru.practicum.shareit.request.model.ItemRequest;
+import ru.practicum.shareit.request.storage.ItemRequestRepository;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.storage.UserRepository;
 import ru.practicum.shareit.util.Reflection;
@@ -36,6 +38,7 @@ public class ItemDBServiceImpl implements ItemService {
     private final UserRepository userRepository;
     private final BookingRepository bookingRepository;
     private final CommentRepository commentRepository;
+    private final ItemRequestRepository itemRequestRepository;
     private final ItemMapper itemMapper;
 
     private static final Logger log = LoggerFactory.getLogger(ItemDBServiceImpl.class);
@@ -45,11 +48,13 @@ public class ItemDBServiceImpl implements ItemService {
                              UserRepository userRepository,
                              BookingRepository bookingRepository,
                              CommentRepository commentRepository,
+                             ItemRequestRepository itemRequestRepository,
                              ItemMapper itemMapper) {
         this.itemRepository = itemRepository;
         this.userRepository = userRepository;
         this.bookingRepository = bookingRepository;
         this.commentRepository = commentRepository;
+        this.itemRequestRepository = itemRequestRepository;
         this.itemMapper = itemMapper;
     }
 
@@ -58,7 +63,11 @@ public class ItemDBServiceImpl implements ItemService {
         User user = userRepository.findById(userId).orElseThrow(
                 () -> new NotFoundException("Пользователь с id = " + userId + " не найден.", log));
 
-        Item item = itemMapper.toItem(itemRequest, user);
+        ItemRequest request = Objects.isNull(itemRequest.getRequestId()) ? null :
+                itemRequestRepository.findById(itemRequest.getRequestId()).orElseThrow(
+                        () -> new NotFoundException("Запрос на вещь с id = " + itemRequest.getRequestId() + " не найден.", log));
+
+        Item item = itemMapper.toItem(itemRequest, user, request);
 
         item = itemRepository.save(item);
 

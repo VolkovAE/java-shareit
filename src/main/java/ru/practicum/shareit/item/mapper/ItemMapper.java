@@ -10,6 +10,7 @@ import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.DateLastNextBooking;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.mapper.IgnoreUnmappedMapperConfig;
+import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.user.model.User;
 
 import java.time.Instant;
@@ -22,11 +23,13 @@ import java.util.Objects;
 public interface ItemMapper {
     ItemMapper INSTANCE = Mappers.getMapper(ItemMapper.class);
 
+    @Mapping(ignore = true, target = "id")
     @Mapping(source = "request.name", target = "name")
     @Mapping(source = "request.description", target = "description")
     @Mapping(source = "request.available", target = "available")
     @Mapping(source = "owner", target = "owner")
-    Item toItem(NewItemRequest request, User owner);
+    @Mapping(source = "itemRequest", target = "request")
+    Item toItem(NewItemRequest request, User owner, ItemRequest itemRequest);
 
     @Mapping(source = "id", target = "id")
     @Mapping(source = "request.name", target = "name")

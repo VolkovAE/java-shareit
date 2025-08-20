@@ -27,4 +27,8 @@ public class NewItemRequest {
             groups = Marker.OnCreate.class)
     @FieldDescription("Доступность для аренды")
     Boolean available;  // статус о том, доступна или нет вещь для аренды (true - доступна, false - нет)
+
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @FieldDescription("Запрос на вещь, которую размещаем")
+    Long requestId;
 }

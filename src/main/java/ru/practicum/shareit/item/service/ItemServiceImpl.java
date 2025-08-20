@@ -38,14 +38,15 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public ItemDto add(NewItemRequest itemRequest, Long userId) {
-        User user = userStorage.getById(userId).orElseThrow(
-                () -> new NotFoundException("Пользователь с id = " + userId + " не найден.", log));
-
-        Item item = itemMapper.toItem(itemRequest, user);
-
-        item = itemStorage.add(item);
-
-        return itemMapper.toItemDto(item);
+//        User user = userStorage.getById(userId).orElseThrow(
+//                () -> new NotFoundException("Пользователь с id = " + userId + " не найден.", log));
+//
+//        Item item = itemMapper.toItem(itemRequest, user);
+//
+//        item = itemStorage.add(item);
+//
+//        return itemMapper.toItemDto(item);
+        return null;
     }
 
     @Override

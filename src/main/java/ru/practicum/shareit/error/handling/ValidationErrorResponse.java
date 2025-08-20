@@ -11,4 +11,5 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ValidationErrorResponse {
     private final List<Violation> violations;   // список нарушений
+    private final Boolean error = true; // в тестах спринта 16 стало необходимым поле с таким названием
 }
