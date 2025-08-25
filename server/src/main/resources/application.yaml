@@ -1,5 +1,5 @@
 server:
-  port: 8080
+  port: 9090
 # Append connection to DB
 spring:
   application.name: ShareIt

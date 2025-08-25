@@ -17,4 +17,5 @@ public final class StringConstantsForRequest {
     public static final String DEFAULT_VALUE_0 = "0";
     public static final String DEFAULT_VALUE_REQUEST_PARAM_COUNT = "32";
     public static final String DEFAULT_VALUE_REQUEST_PARAM_STATE = "ALL";
+    public static final String NAME_PARAMETER_SERVER_ADDRESS = "${shareit-server.url}";
 }
