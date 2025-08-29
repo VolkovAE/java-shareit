@@ -1,6 +1,7 @@
 package ru.practicum.shareit.booking.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
@@ -11,6 +12,7 @@ import ru.practicum.shareit.client.BaseClient;
 import static ru.practicum.shareit.util.StringConstantsForRequest.NAME_PARAMETER_SERVER_ADDRESS;
 
 @Service
+@Qualifier("BookingClient")
 public class BookingClient extends BaseClient {
     private static final String API_PREFIX = "/bookings";
 
