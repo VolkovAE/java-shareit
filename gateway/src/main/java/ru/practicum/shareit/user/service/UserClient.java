@@ -17,6 +17,7 @@ import ru.practicum.shareit.user.dto.UpdateUserRequest;
 import java.util.Map;
 
 import static ru.practicum.shareit.util.StringConstantsForRequest.*;
+import static ru.practicum.shareit.util.Utils.addParameterRequest;
 
 @Service
 @Qualifier("UserClient")
@@ -72,15 +73,5 @@ public class UserClient extends BaseClient {
         log.info("Передан на сервер запрос: Удалить данные пользователя с id {}.", userId);
 
         return delete(SEPARATOR + userId);
-    }
-
-    private void addParameterRequest(StringBuilder stringBuilder, String nameParameter) {
-        if (stringBuilder.isEmpty()) stringBuilder.append("?");
-        else stringBuilder.append("&");
-
-        stringBuilder.append(nameParameter);
-        stringBuilder.append("={");
-        stringBuilder.append(nameParameter);
-        stringBuilder.append("}");
     }
 }

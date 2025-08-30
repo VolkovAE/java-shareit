@@ -21,7 +21,7 @@ import static ru.practicum.shareit.util.StringConstantsForRequest.*;
  */
 @Validated
 @RestController
-@RequestMapping(path = REQUEST_MAPPING_PATH)
+@RequestMapping(path = REQUEST_MAPPING_PATH_USER)
 public class UserControllerGateway {
     private final UserClient userClient;
 

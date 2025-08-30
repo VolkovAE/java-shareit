@@ -1,8 +1,5 @@
 package ru.practicum.shareit.item;
 
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.Positive;
-import jakarta.validation.constraints.PositiveOrZero;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +8,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.item.dto.*;
 import ru.practicum.shareit.item.service.ItemService;
-import ru.practicum.shareit.validation.Marker;
 
 import java.util.Collection;
 
@@ -34,9 +30,8 @@ public class ItemController {
     }
 
     @PostMapping
-    @Validated(Marker.OnCreate.class)
-    public ItemDto add(@RequestHeader(name = NAME_HEADER_USER_ID, required = true) @Positive Long userId,
-                       @RequestBody @Valid NewItemRequest itemRequest) {
+    public ItemDto add(@RequestHeader(name = NAME_HEADER_USER_ID, required = true) Long userId,
+                       @RequestBody NewItemRequest itemRequest) {
         // проверку выполнения необходимых условий осуществил через валидацию полей
         // обработчик выполняется после успешной валидации полей
 
@@ -44,14 +39,14 @@ public class ItemController {
     }
 
     @GetMapping("/{id}")
-    public ItemWithDateDto findById(@PathVariable(name = PATH_VARIABLE_ID) @Positive Long itemId,
-                                    @RequestHeader(name = NAME_HEADER_USER_ID, required = true) @Positive Long userId) {
+    public ItemWithDateDto findById(@PathVariable(name = PATH_VARIABLE_ID) Long itemId,
+                                    @RequestHeader(name = NAME_HEADER_USER_ID, required = true) Long userId) {
         return itemService.getById(itemId, userId);
     }
 
     @GetMapping
     public Collection<ItemWithDateDto> findAll(@RequestHeader(name = NAME_HEADER_USER_ID, required = false, defaultValue = DEFAULT_VALUE_0)
-                                               @PositiveOrZero Long userId) {
+                                               Long userId) {
         return itemService.findAll(userId);
     }
 
@@ -61,10 +56,9 @@ public class ItemController {
     }
 
     @PatchMapping("/{id}")
-    @Validated(Marker.OnUpdate.class)
-    public ItemDto update(@PathVariable(name = PATH_VARIABLE_ID) @Positive Long itemId,
-                          @RequestHeader(name = NAME_HEADER_USER_ID, required = true) @Positive Long userId,
-                          @RequestBody @Valid UpdateItemRequest itemRequest) {
+    public ItemDto update(@PathVariable(name = PATH_VARIABLE_ID) Long itemId,
+                          @RequestHeader(name = NAME_HEADER_USER_ID, required = true) Long userId,
+                          @RequestBody UpdateItemRequest itemRequest) {
         // проверку выполнения необходимых условий осуществил через валидацию полей
         // обработчик выполняется после успешной валидации полей
 
@@ -72,9 +66,8 @@ public class ItemController {
     }
 
     @DeleteMapping("/{id}")
-    @Validated(Marker.OnDelete.class)
-    public ItemDto delete(@PathVariable(name = PATH_VARIABLE_ID) @Positive Long itemId,
-                          @RequestHeader(name = NAME_HEADER_USER_ID, required = true) @Positive Long userId) {
+    public ItemDto delete(@PathVariable(name = PATH_VARIABLE_ID) Long itemId,
+                          @RequestHeader(name = NAME_HEADER_USER_ID, required = true) Long userId) {
         // проверку выполнения необходимых условий осуществил через валидацию полей
         // обработчик выполняется после успешной валидации полей
 
@@ -82,10 +75,9 @@ public class ItemController {
     }
 
     @PostMapping("/{itemId}/comment")
-    @Validated(Marker.OnCreate.class)
-    public CommentDto addComment(@PathVariable(name = PATH_VARIABLE_ITEM_ID) @Positive Long itemId,
-                                 @RequestHeader(name = NAME_HEADER_USER_ID, required = true) @Positive Long userId,
-                                 @RequestBody @Valid NewCommentRequest commentRequest) {
+    public CommentDto addComment(@PathVariable(name = PATH_VARIABLE_ITEM_ID) Long itemId,
+                                 @RequestHeader(name = NAME_HEADER_USER_ID, required = true) Long userId,
+                                 @RequestBody NewCommentRequest commentRequest) {
         return itemService.addComment(itemId, userId, commentRequest);
     }
 }
