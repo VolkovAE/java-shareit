@@ -69,6 +69,10 @@ public class BaseClient {
         return makeAndSendRequest(HttpMethod.PATCH, path, userId, parameters, body);
     }
 
+    protected <T> ResponseEntity<Object> patch(String path, Long userId, @Nullable Map<String, Object> parameters) {
+        return makeAndSendRequest(HttpMethod.PATCH, path, userId, parameters, null);
+    }
+
     protected ResponseEntity<Object> delete(String path) {
         return delete(path, null, null);
     }
