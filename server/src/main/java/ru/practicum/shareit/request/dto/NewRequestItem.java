@@ -9,7 +9,7 @@ import ru.practicum.shareit.validation.FieldDescription;
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class NewRequestItem {
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @JsonProperty(access = JsonProperty.Access.READ_WRITE)
     @FieldDescription(value = "Текст запроса пользователя")
     String description;
 }

@@ -18,19 +18,19 @@ import java.util.List;
 @EqualsAndHashCode(of = {"id"})
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ItemRequestDto {
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @JsonProperty(access = JsonProperty.Access.READ_WRITE)
     @FieldDescription(value = "id запроса на вещь")
     Long id;
 
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @JsonProperty(access = JsonProperty.Access.READ_WRITE)
     @FieldDescription(value = "Текст запроса")
     String description;
 
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @JsonProperty(access = JsonProperty.Access.READ_WRITE)
     @FieldDescription(value = "Дата и время создания запроса")
     LocalDateTime created;
 
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @JsonProperty(access = JsonProperty.Access.READ_WRITE)
     @FieldDescription(value = "Список ответов")
     List<ItemOnRequestDto> items;
 }
