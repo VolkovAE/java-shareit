@@ -59,7 +59,7 @@ public class UserControllerGateway {
 
     @PatchMapping("/{id}")
     @Validated(Marker.OnUpdate.class)
-    public ResponseEntity<Object> update(@PathVariable(name = PATH_VARIABLE_ID) @Positive Long userId,
+    public ResponseEntity<Object> update(@PathVariable(name = PATH_VARIABLE_ID) @Positive(groups = Marker.OnUpdate.class) Long userId,
                                          @RequestBody @Valid UpdateUserRequest userRequest) {
         // проверку выполнения необходимых условий осуществил через валидацию полей
         // обработчик выполняется после успешной валидации полей
@@ -70,7 +70,7 @@ public class UserControllerGateway {
 
     @DeleteMapping("/{id}")
     @Validated(Marker.OnDelete.class)
-    public ResponseEntity<Object> delete(@PathVariable(name = PATH_VARIABLE_ID) @Positive Long userId) {
+    public ResponseEntity<Object> delete(@PathVariable(name = PATH_VARIABLE_ID) @Positive(groups = Marker.OnDelete.class) Long userId) {
         // проверку выполнения необходимых условий осуществил через валидацию полей
         // обработчик выполняется после успешной валидации полей
         log.info("Получен запрос: Удалить данные пользователя с id {}.", userId);
