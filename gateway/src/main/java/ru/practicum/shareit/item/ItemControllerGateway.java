@@ -35,7 +35,7 @@ public class ItemControllerGateway {
 
     @PostMapping
     @Validated(Marker.OnCreate.class)
-    public ResponseEntity<Object> add(@RequestHeader(name = NAME_HEADER_USER_ID, required = true) @Positive Long userId,
+    public ResponseEntity<Object> add(@RequestHeader(name = NAME_HEADER_USER_ID, required = true) @Positive(groups = Marker.OnCreate.class) Long userId,
                                       @RequestBody @Valid NewItemRequest itemRequest) {
         // проверку выполнения необходимых условий осуществил через валидацию полей
         // обработчик выполняется после успешной валидации полей
@@ -69,8 +69,8 @@ public class ItemControllerGateway {
 
     @PatchMapping("/{id}")
     @Validated(Marker.OnUpdate.class)
-    public ResponseEntity<Object> update(@PathVariable(name = PATH_VARIABLE_ID) @Positive Long itemId,
-                                         @RequestHeader(name = NAME_HEADER_USER_ID, required = true) @Positive Long userId,
+    public ResponseEntity<Object> update(@PathVariable(name = PATH_VARIABLE_ID) @Positive(groups = Marker.OnUpdate.class) Long itemId,
+                                         @RequestHeader(name = NAME_HEADER_USER_ID, required = true) @Positive(groups = Marker.OnUpdate.class) Long userId,
                                          @RequestBody @Valid UpdateItemRequest itemRequest) {
         // проверку выполнения необходимых условий осуществил через валидацию полей
         // обработчик выполняется после успешной валидации полей
@@ -81,8 +81,8 @@ public class ItemControllerGateway {
 
     @DeleteMapping("/{id}")
     @Validated(Marker.OnDelete.class)
-    public ResponseEntity<Object> delete(@PathVariable(name = PATH_VARIABLE_ID) @Positive Long itemId,
-                                         @RequestHeader(name = NAME_HEADER_USER_ID, required = true) @Positive Long userId) {
+    public ResponseEntity<Object> delete(@PathVariable(name = PATH_VARIABLE_ID) @Positive(groups = Marker.OnDelete.class) Long itemId,
+                                         @RequestHeader(name = NAME_HEADER_USER_ID, required = true) @Positive(groups = Marker.OnDelete.class) Long userId) {
         // проверку выполнения необходимых условий осуществил через валидацию полей
         // обработчик выполняется после успешной валидации полей
         log.info("Получен запрос: Удалить данные вещи с id {} владельца с id {}.", itemId, userId);
@@ -92,8 +92,8 @@ public class ItemControllerGateway {
 
     @PostMapping("/{itemId}/comment")
     @Validated(Marker.OnCreate.class)
-    public ResponseEntity<Object> addComment(@PathVariable(name = PATH_VARIABLE_ITEM_ID) @Positive Long itemId,
-                                             @RequestHeader(name = NAME_HEADER_USER_ID, required = true) @Positive Long userId,
+    public ResponseEntity<Object> addComment(@PathVariable(name = PATH_VARIABLE_ITEM_ID) @Positive(groups = Marker.OnCreate.class) Long itemId,
+                                             @RequestHeader(name = NAME_HEADER_USER_ID, required = true) @Positive(groups = Marker.OnCreate.class) Long userId,
                                              @RequestBody @Valid NewCommentRequest commentRequest) {
         log.info("Получен запрос: Добавить комментарий {} к вещи с id {} от пользователя (арендовавшего) с id {}.",
                 commentRequest.getText(), itemId, userId);
