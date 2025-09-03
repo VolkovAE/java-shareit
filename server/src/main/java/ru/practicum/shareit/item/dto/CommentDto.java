@@ -13,23 +13,23 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode(of = {"id"})
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class CommentDto {
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @JsonProperty(access = JsonProperty.Access.READ_WRITE)
     @FieldDescription(value = "id комментария")
     Long id;
 
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @JsonProperty(access = JsonProperty.Access.READ_WRITE)
     @FieldDescription(value = "Текст комментария")
     String text;
 
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @JsonProperty(access = JsonProperty.Access.READ_WRITE)
     @FieldDescription(value = "Вещь, которая была арендована пользователем, к которой оставляется комментарий")
     ItemDto item;
 
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @JsonProperty(access = JsonProperty.Access.READ_WRITE)
     @FieldDescription(value = "Имя автора комментария")
     String authorName;
 
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @JsonProperty(access = JsonProperty.Access.READ_WRITE)
     @FieldDescription(value = "Дата и время создания комментария")
     LocalDateTime created;
 }

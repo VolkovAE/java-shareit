@@ -31,10 +31,6 @@ import static ru.practicum.shareit.util.StringConstantsForRequest.REQUEST_MAPPIN
 @WebMvcTest(controllers = UserController.class)
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class UserControllerServerTests {
-//    static final int LENGTH_NAME_NEW_USER = 10;
-//    static final int LENGTH_EMAIL_NEW_USER = 15;
-//    static final String NAME_DOMAIN = "yandex.ru";
-
     @Autowired
     ObjectMapper mapper;
 
