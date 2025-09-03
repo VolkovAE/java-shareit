@@ -11,6 +11,7 @@ public final class StringConstantsForRequest {
     public static final String PATH_VARIABLE_BOOKING_ID = "bookingId";
     public static final String PATH_VARIABLE_REQUEST_ID = "requestId";
     public static final String PATH_VARIABLE_SEARCH = "search";
+    public static final String PATH_VARIABLE_OWNER = "owner";
     public static final String REQUEST_PARAM_STATE = "state";
     public static final String REQUEST_PARAM_PAGE = "page";
     public static final String REQUEST_PARAM_COUNT = "count";
@@ -21,5 +22,6 @@ public final class StringConstantsForRequest {
     public static final String REQUEST_MAPPING_PATH_USER = "/users";
     public static final String REQUEST_MAPPING_PATH_ITEM = "/items";
     public static final String REQUEST_MAPPING_PATH_REQUEST = "/requests";
+    public static final String REQUEST_MAPPING_PATH_BOOKING = "/bookings";
     public static final String SEPARATOR = "/";
 }

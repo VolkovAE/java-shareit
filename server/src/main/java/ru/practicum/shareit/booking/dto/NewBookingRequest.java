@@ -13,15 +13,15 @@ import java.time.LocalDateTime;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @StartEqualEnd
 public class NewBookingRequest {
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @JsonProperty(access = JsonProperty.Access.READ_WRITE)
     @FieldDescription("Дата и время начала бронирования")
     LocalDateTime start;
 
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @JsonProperty(access = JsonProperty.Access.READ_WRITE)
     @FieldDescription("Дата и время конца бронирования")
     LocalDateTime end;
 
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @JsonProperty(access = JsonProperty.Access.READ_WRITE)
     @FieldDescription("id вещи, которую пользователь бронирует")
     Long itemId;
 }
