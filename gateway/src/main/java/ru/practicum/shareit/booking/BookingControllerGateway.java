@@ -32,7 +32,7 @@ public class BookingControllerGateway {
 
     @PostMapping
     @Validated(Marker.OnCreate.class)
-    public ResponseEntity<Object> add(@RequestHeader(name = NAME_HEADER_USER_ID, required = true) @Positive Long userId,
+    public ResponseEntity<Object> add(@RequestHeader(name = NAME_HEADER_USER_ID, required = true) @Positive(groups = Marker.OnCreate.class) Long userId,
                                       @RequestBody @Valid NewBookingRequest newBookingRequest) {
         log.info("Получен запрос: Добавить заявку на аренду {} от пользователя с id {}.", newBookingRequest.toString(), userId);
 
