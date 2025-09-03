@@ -32,7 +32,7 @@ public class ItemRequestControllerGateway {
 
     @PostMapping
     @Validated(Marker.OnCreate.class)
-    ResponseEntity<Object> add(@RequestHeader(name = NAME_HEADER_USER_ID, required = true) @Positive Long userId,
+    ResponseEntity<Object> add(@RequestHeader(name = NAME_HEADER_USER_ID, required = true) @Positive(groups = Marker.OnCreate.class) Long userId,
                                @RequestBody @Valid NewRequestItem requestItem) {
         log.info("Получен запрос: Добавить новый запрос на вещь {} от пользователя с id {}.", requestItem.toString(), userId);
 
