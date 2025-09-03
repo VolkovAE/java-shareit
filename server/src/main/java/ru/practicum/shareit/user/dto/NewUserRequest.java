@@ -11,11 +11,11 @@ import ru.practicum.shareit.validation.FieldDescription;
 @EqualsAndHashCode(of = {"email"})
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class NewUserRequest {
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @JsonProperty(access = JsonProperty.Access.READ_WRITE)
     @FieldDescription("Электронная почта")
     String email;
 
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @JsonProperty(access = JsonProperty.Access.READ_WRITE)
     @FieldDescription("Имя для отображения")
     String name;
 }
