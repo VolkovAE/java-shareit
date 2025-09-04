@@ -11,11 +11,12 @@ import java.util.Collection;
 import java.util.Optional;
 
 public interface ItemRepository extends JpaRepository<Item, Long> {
-    @Query("select new ru.practicum.shareit.item.dto.ItemDto(i.id, i.name, i.description, i.available) " +
-            "from Item i " +
-            "where i.available and " +
-            "(upper(i.name) like upper(concat('%', ?1, '%')) " +
-            " or upper(i.description) like upper(concat('%', ?1, '%')))")
+    @Query(value = """
+            select new ru.practicum.shareit.item.dto.ItemDto(i.id, i.name, i.description, i.available)
+            from Item i
+            where i.available and
+            (upper(i.name) like upper(concat('%', ?1, '%'))
+            or upper(i.description) like upper(concat('%', ?1, '%')))""")
     Collection<ItemDto> findAllByText(String textSearch);
 
     Collection<Item> findByOwner(User user);
