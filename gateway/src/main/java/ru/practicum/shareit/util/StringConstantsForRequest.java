@@ -31,4 +31,5 @@ public final class StringConstantsForRequest {
     public static final String REQUEST_MAPPING_PATH_REQUEST = "/requests";
     public static final String API_PREFIX_REQUEST = "/requests";
     public static final String SEPARATOR = "/";
+    public static final String COMMON_CACHE = "common";
 }

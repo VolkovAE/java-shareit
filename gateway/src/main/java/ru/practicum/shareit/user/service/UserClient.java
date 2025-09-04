@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
@@ -21,6 +23,7 @@ import static ru.practicum.shareit.util.Utils.addParameterRequest;
 
 @Service
 @Qualifier("UserClient")
+@CacheConfig(cacheNames = {COMMON_CACHE})
 public class UserClient extends BaseClient {
     private static final String API_PREFIX = API_PREFIX_USER;
 
@@ -36,18 +39,21 @@ public class UserClient extends BaseClient {
         );
     }
 
+    // @Cacheable - убрал из-за тестов, т.к. второй запрос с таким же имэйл возвращает 200, а должен 409 или 500 по тесту.
     public ResponseEntity<Object> add(NewUserRequest userRequest) {
         log.info("Передан на сервер запрос: Добавить нового пользователя с email {}, name {}.", userRequest.getEmail(), userRequest.getName());
 
         return post("", userRequest);
     }
 
+    @Cacheable
     public ResponseEntity<Object> getById(Long userId) {
         log.info("Передан на сервер запрос: Получить данные пользователя с id {}.", userId);
 
         return get(SEPARATOR + userId, userId);
     }
 
+    @Cacheable
     public ResponseEntity<Object> findAll(int page, int count) {
         log.info("Передан на сервер запрос: Получить список пользователей по странично. Индекс страницы {} с количеством пользователей на странице {}.", page, count);
 
@@ -62,6 +68,7 @@ public class UserClient extends BaseClient {
         return get(pathBuilder.toString(), parameters);
     }
 
+    @Cacheable
     public ResponseEntity<Object> update(Long userId, UpdateUserRequest userRequest) {
         log.info("Передан на сервер запрос: Обновить данные пользователя с id {}. Установить значения email {}, name {}.",
                 userId, userRequest.getEmail(), userRequest.getName());
@@ -69,6 +76,7 @@ public class UserClient extends BaseClient {
         return patch(SEPARATOR + userId, userRequest);
     }
 
+    @Cacheable
     public ResponseEntity<Object> delete(Long userId) {
         log.info("Передан на сервер запрос: Удалить данные пользователя с id {}.", userId);
 

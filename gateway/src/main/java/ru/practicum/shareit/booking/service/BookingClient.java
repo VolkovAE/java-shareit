@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
@@ -21,6 +23,7 @@ import static ru.practicum.shareit.util.Utils.addPathParameter;
 
 @Service
 @Qualifier("BookingClient")
+@CacheConfig(cacheNames = {COMMON_CACHE})
 public class BookingClient extends BaseClient {
     private static final String API_PREFIX = API_PREFIX_BOOKING;
 
@@ -36,12 +39,14 @@ public class BookingClient extends BaseClient {
         );
     }
 
+    @Cacheable
     public ResponseEntity<Object> add(NewBookingRequest newBookingRequest, Long userId) {
         log.info("Передан на сервер запрос: Добавить заявку на аренду {} от пользователя с id {}.", newBookingRequest.toString(), userId);
 
         return post("", userId, newBookingRequest);
     }
 
+    @Cacheable
     public ResponseEntity<Object> approve(Long bookingId, Long userId, Boolean approval) {
         if (approval)
             log.info("Передан на сервер запрос: Утвердить заявку на аренду с id {} владельцем с id {}.", bookingId, userId);
@@ -57,12 +62,14 @@ public class BookingClient extends BaseClient {
         return patch(pathBuilder.toString(), userId, parameters);
     }
 
+    @Cacheable
     public ResponseEntity<Object> findById(Long bookingId, Long userId) {
         log.info("Передан на сервер запрос: Получить данные по заявке на аренду {}.", bookingId);
 
         return get(SEPARATOR + bookingId, userId);
     }
 
+    @Cacheable
     public ResponseEntity<Object> findByBooker(Long userId, String state) {
         log.info("Передан на сервер запрос: Получить заявки на аренду от пользователя с id {} в состоянии {}.", userId, state);
 
@@ -74,6 +81,7 @@ public class BookingClient extends BaseClient {
         return get(pathBuilder.toString(), userId, parameters);
     }
 
+    @Cacheable
     public ResponseEntity<Object> findByOwner(Long userId, String state) {
         log.info("Передан на сервер запрос: Получить заявки на аренду вещей владельца с id {} в состоянии {}.", userId, state);
 
