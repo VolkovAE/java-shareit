@@ -1,0 +1,22 @@
+package ru.practicum.shareit.item.dto;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+import lombok.AccessLevel;
+import lombok.Data;
+import lombok.experimental.FieldDefaults;
+import ru.practicum.shareit.validation.FieldDescription;
+import ru.practicum.shareit.validation.Marker;
+
+import static ru.practicum.shareit.util.NumericConstantsForRequest.LENGTH_COMMENT_MAX;
+
+@Data
+@FieldDefaults(level = AccessLevel.PRIVATE)
+public class NewCommentRequest {
+    @JsonProperty(access = JsonProperty.Access.READ_WRITE)
+    @NotBlank(message = "Текст комментария не может быть пустым.", groups = Marker.OnCreate.class)
+    @Size(max = LENGTH_COMMENT_MAX, groups = Marker.OnCreate.class)
+    @FieldDescription("Текст комментария")
+    String text;
+}
